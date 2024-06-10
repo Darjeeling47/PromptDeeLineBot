@@ -5,13 +5,13 @@ const router = express.Router()
 const { protect } = require("../middleware/auth")
 
 // Import controller
-const {
-  getUsers,
-  getUser,
-  updateUser,
-  deleteUser,
-} = require("../controllers/users")
-const { getMe, updateMe, deleteMe } = require("../controllers/me")
+const getUsers = require("../controllers/users/getUsers")
+const getUser = require("../controllers/users/getUser")
+const updateUser = require("../controllers/users/updateUser")
+const deleteUser = require("../controllers/users/deleteUser")
+const getMe = require("../controllers/me/getMe")
+const updateMe = require("../controllers/me/updateMe")
+const deleteMe = require("../controllers/me/deleteMe")
 
 // Router
 router.route("/").get(protect, getUsers)

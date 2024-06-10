@@ -5,13 +5,11 @@ const router = express.Router()
 const { protect } = require("../middleware/auth")
 
 // Import controller
-const {
-  getShops,
-  getShop,
-  createShop,
-  updateShop,
-  deleteShop,
-} = require("../controllers/shops")
+const getShops = require("../controllers/shops/getShops")
+const getShop = require("../controllers/shops/getShop")
+const createShop = require("../controllers/shops/createShop")
+const updateShop = require("../controllers/shops/updateShop")
+const deleteShop = require("../controllers/shops/deleteShop")
 
 // Router
 router.route("/").get(protect, getShops).post(protect, createShop)

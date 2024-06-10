@@ -5,13 +5,11 @@ const router = express.Router()
 const { protect } = require("../middleware/auth")
 
 // Import controller
-const {
-  getRooms,
-  getRoom,
-  createRoom,
-  updateRoom,
-  deleteRoom,
-} = require("../controllers/rooms")
+const getRooms = require("../controllers/rooms/getRooms")
+const getRoom = require("../controllers/rooms/getRoom")
+const createRoom = require("../controllers/rooms/createRoom")
+const updateRoom = require("../controllers/rooms/updateRoom")
+const deleteRoom = require("../controllers/rooms/deleteRoom")
 
 // Router
 router.route("/").get(protect, getRooms).post(protect, createRoom)

@@ -5,7 +5,9 @@ const router = express.Router()
 const { protect } = require("../middleware/auth")
 
 // Import controller
-const { register, login, logout } = require("../controllers/auth")
+const register = require("../controllers/auth/register")
+const login = require("../controllers/auth/login")
+const logout = require("../controllers/auth/logout")
 
 // Auth router
 router.post("/register", register)
