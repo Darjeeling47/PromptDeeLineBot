@@ -87,18 +87,14 @@ exports.login = async (req, res, next) => {
 
     //Check if find the user or not
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "wrong password or email" })
+      return res.status(400).json({ success: false, message: "wrong email" })
     }
 
     //Check if password match
     const isMatch = await user.matchPassword(password)
 
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: "wrong password or email" })
+      return res.status(400).json({ success: false, message: "wrong password" })
     }
 
     const token = user.getSignedJwtToken()
@@ -139,7 +135,6 @@ exports.logout = async (req, res, next) => {
     if (!token || token == "null") {
       return res.status(200).json({
         success: true,
-        token: token,
       })
     }
 

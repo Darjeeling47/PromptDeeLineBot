@@ -16,14 +16,14 @@ const { getMe, updateMe, deleteMe } = require("../controllers/me")
 // Router
 router.route("/").get(protect, getUsers)
 router
-  .route("/:uid")
-  .get(protect, getUser)
-  .put(protect, updateUser)
-  .delete(protect, deleteUser)
-router
   .route("/me")
   .get(protect, getMe)
   .put(protect, updateMe)
   .delete(protect, deleteMe)
+router
+  .route("/:uid")
+  .get(protect, getUser)
+  .put(protect, updateUser)
+  .delete(protect, deleteUser)
 
 module.exports = router

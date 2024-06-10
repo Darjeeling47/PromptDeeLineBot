@@ -12,6 +12,7 @@ exports.getMe = async (req, res, next) => {
     return res.status(200).json({ user: user })
   } catch (err) {
     // console.log(err.stack)
+    console.log(req.user.id)
     return res.status(500).json({ success: false, message: err.message })
   }
 }
@@ -33,6 +34,17 @@ exports.updateMe = async (req, res, next) => {
   }
 
   try {
+    // find user by email to check if email already exists
+    const checkUser = await User.findOne({ email: req.body.email })
+
+    if (checkUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already exists",
+      })
+    }
+
+    // update user's data
     const user = await User.findByIdAndUpdate(req.user.id, newData, {
       new: true,
       runValidators: true,

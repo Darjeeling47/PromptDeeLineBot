@@ -41,8 +41,6 @@ exports.getUsers = async (req, res, next) => {
       query = query.sort("-createdAt")
     }
 
-    query = query.skip(startIndex).limit(limit)
-
     //Executing
     const users = await query
 
@@ -94,6 +92,16 @@ exports.updateUser = async (req, res, next) => {
 
   // update user
   try {
+    // find user by email to check if email already exists
+    const checkUser = await User.findOne({ email: req.body.email })
+
+    if (checkUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already exists",
+      })
+    }
+
     const user = await User.findByIdAndUpdate(req.params.uid, newData, {
       new: true,
       runValidators: true,
