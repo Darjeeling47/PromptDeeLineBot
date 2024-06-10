@@ -40,9 +40,13 @@ app.use(cors())
 // Routing --------------------------------------------------------------------------------
 const auth = require("./routes/auth")
 const users = require("./routes/users")
+const shops = require("./routes/shops")
+const rooms = require("./routes/rooms")
 
 app.use("/api/v1/auth", auth)
 app.use("/api/v1/users", users)
+app.use("/api/v1/shops", shops)
+app.use("/api/v1/rooms", rooms)
 
 // setting up port ------------------------------------------------------------------------
 const PORT = process.env.PORT || 5001

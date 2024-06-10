@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 // Import middleware
-const { protect, authorize } = require("../middleware/auth")
+const { protect } = require("../middleware/auth")
 
 // Import controller
 const {
