@@ -53,6 +53,11 @@ handleWebhook = async (req, res) => {
   }
 }
 
-router.route("/").post(handleWebhook)
+handleWebhookGet = async (req, res) => {
+  // Respond with success
+  res.status(200)
+}
+
+router.route("/").get(handleWebhookGet).post(handleWebhook)
 
 module.exports = router
