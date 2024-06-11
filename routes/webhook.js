@@ -18,16 +18,11 @@ postWebhook = async (req, res) => {
   if (req.body && req.body.events && req.body.events.length > 0) {
     const messageText = req.body.events[0].message.text || "No message"
 
-    await Message.create({ message: messageText + " 1" })
     try {
-      await Message.create({ message: messageText + " 2" })
       let headers = {
         "Content-Type": "application/json",
         Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
       }
-      await Message.create({
-        message: messageText + " 3 " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
-      })
       let body = JSON.stringify({
         replyToken: req.body.events[0].replyToken,
         messages: [
@@ -37,7 +32,6 @@ postWebhook = async (req, res) => {
           },
         ],
       })
-      await Message.create({ message: messageText + " 4 " + body.toString() })
       request.post(
         {
           url: "https://api.line.me/v2/bot/message/reply",
@@ -50,7 +44,7 @@ postWebhook = async (req, res) => {
       )
 
       // Save the message to the database
-      const mess = await Message.create({ message: messageText + " last" })
+      const mess = await Message.create({ message: messageText })
 
       // Respond with success
       res.status(200).json({ success: true, data: mess })
