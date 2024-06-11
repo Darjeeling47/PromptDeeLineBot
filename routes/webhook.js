@@ -24,6 +24,7 @@ handleWebhook = async (req, res) => {
     if (messageText.include("Register Seller")) {
       createLineRoom(messageText, req.body.events[0])
     } else if (messageText.include("My Score")) {
+    } else {
     }
 
     // Save the message to the database
