@@ -4,6 +4,11 @@ const router = express.Router()
 const bodyParser = require("body-parser")
 const request = require("request")
 
+app = express()
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 getWebhook = (req, res) => {
   return res.sendStatus(200)
 }
