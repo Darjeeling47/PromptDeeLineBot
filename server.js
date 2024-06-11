@@ -43,15 +43,14 @@ const users = require("./routes/users")
 const shops = require("./routes/shops")
 const rooms = require("./routes/rooms")
 const cashBack = require("./routes/cashBack")
+const webhook = require("./routes/webhook")
 
 app.use("/api/v1/auth", auth)
 app.use("/api/v1/users", users)
 app.use("/api/v1/shops", shops)
 app.use("/api/v1/rooms", rooms)
 app.use("/api/v1/cash-back", cashBack)
-app.post("/webhook", (req, res) => {
-  return res.sendStatus(200)
-})
+app.use("/webhook", webhook)
 
 // setting up port ------------------------------------------------------------------------
 const PORT = process.env.PORT || 5000
