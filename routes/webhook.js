@@ -1,11 +1,12 @@
 const express = require("express")
 const router = express.Router()
 
-router
-  .route("/")
-  .get((req, res) => {
-    return res.sendStatus(200)
-  })
-  .post((req, res) => {
-    return res.sendStatus(200)
-  })
+const getWebhook = (req, res) => {
+  return res.sendStatus(200)
+}
+
+const postWebhook = (req, res) => {
+  return res.sendStatus(200)
+}
+
+router.route("/").get(getWebhook).post(postWebhook)

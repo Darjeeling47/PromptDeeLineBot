@@ -50,7 +50,8 @@ app.use("/api/v1/users", users)
 app.use("/api/v1/shops", shops)
 app.use("/api/v1/rooms", rooms)
 app.use("/api/v1/cash-back", cashBack)
-app.use("/webhook", webhook)
+app.post("/webhook", (req, res) => res.sendStatus(200))
+app.get("/webhook", (req, res) => res.sendStatus(200))
 
 // setting up port ------------------------------------------------------------------------
 const PORT = process.env.PORT || 5000
