@@ -9,7 +9,7 @@ getWebhook = (req, res) => {
 }
 
 postWebhook = (req, res) => {
-  const mess = Message.create(req.body.events[0].message.text)
+  const mess = Message.create({ message: req.body.events[0].message.text })
 
   let reply_token = req.body.events[0].replyToken
   let headers = {
