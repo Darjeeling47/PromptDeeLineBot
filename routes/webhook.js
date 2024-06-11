@@ -25,9 +25,7 @@ handleWebhook = async (req, res) => {
     const message = await Message.create({ message: messageText })
 
     if (messageText.include("Register Seller")) {
-      try {
-        createLineRoom(messageText, req.body.events[0])
-      } catch (err) {}
+      createLineRoom(messageText, req.body.events[0])
     } else if (messageText.include("My Score")) {
     } else {
     }
