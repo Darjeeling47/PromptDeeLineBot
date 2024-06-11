@@ -1,4 +1,5 @@
 const express = require("express")
+const Message = require("../models/Message")
 const router = express.Router()
 
 getWebhook = (req, res) => {
@@ -6,6 +7,10 @@ getWebhook = (req, res) => {
 }
 
 postWebhook = (req, res) => {
+  let request = require("request")
+
+  const mess = Message.create(req.body.events[0].message.text)
+
   let reply_token = req.body.events[0].replyToken
   let headers = {
     "Content-Type": "application/json",
