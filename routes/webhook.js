@@ -29,15 +29,11 @@ postWebhook = async (req, res) => {
         message: messageText + " 3 " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
       })
       let body = JSON.stringify({
-        replyToken: reply_token,
+        replyToken: req.body.events[0].replyToken,
         messages: [
           {
             type: "text",
             text: "Hello",
-          },
-          {
-            type: "text",
-            text: "How are you?",
           },
         ],
       })
