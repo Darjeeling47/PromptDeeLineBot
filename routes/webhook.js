@@ -17,11 +17,8 @@ handleWebhook = async (req, res) => {
   if (req.body && req.body.events && req.body.events.length > 0) {
     const messageText = req.body.events[0].message.text || "No message"
 
-    // Save the message to the database
-    const message = await Message.create({ message: messageText })
-
     // headers for the request
-    const headers = {
+    let headers = {
       "Content-Type": "application/json",
       Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
     }
@@ -44,9 +41,12 @@ handleWebhook = async (req, res) => {
         body: body,
       },
       (err, res, body) => {
-        console.log("status = " + res.statusCode)
+        console.log(res)
       }
     )
+
+    // Save the message to the database
+    await Message.create({ message: messageText })
 
     // Respond with success
     res.status(200)
