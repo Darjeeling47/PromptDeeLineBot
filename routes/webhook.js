@@ -2,63 +2,41 @@ const express = require("express")
 const Message = require("../models/Message")
 const router = express.Router()
 const bodyParser = require("body-parser")
-const request = require("request")
 
 app = express()
-
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+// Import controllers
+const createLineRoom = require("../controllers/webhook/createLineRoom")
+
+//Dummy for line bot
 getWebhook = (req, res) => {
   return res.sendStatus(200)
 }
 
-postWebhook = async (req, res) => {
+// Handle webhook post request
+handleWebhook = async (req, res) => {
   // Check if req.body and req.body.events are defined
   if (req.body && req.body.events && req.body.events.length > 0) {
     const messageText = req.body.events[0].message.text || "No message"
 
-    try {
-      let headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
-      }
-      let body = JSON.stringify({
-        replyToken: req.body.events[0].replyToken,
-        messages: [
-          {
-            type: "text",
-            text: "Hello",
-          },
-        ],
-      })
-      request.post(
-        {
-          url: "https://api.line.me/v2/bot/message/reply",
-          headers: headers,
-          body: body,
-        },
-        (err, res, body) => {
-          console.log("status = " + res.statusCode)
-        }
-      )
-
-      // Save the message to the database
-      const mess = await Message.create({ message: messageText })
-
-      // Respond with success
-      res.status(200).json({ success: true, data: mess })
-    } catch (error) {
-      // Handle errors
-      console.error("Error saving message to the database:", error)
-      res.status(500).json({ success: false, error: "Internal Server Error" })
+    if (messageText.include("Register Seller")) {
+      createLineRoom(messageText, req.body.events[0])
+    } else if (messageText.include("My Score")) {
     }
+
+    // Save the message to the database
+    const message = await Message.create({ message: messageText })
+
+    // Respond with success
+    res.status(200).json({ success: true, data: mess })
   } else {
     // Respond with bad request status if req.body or req.body.events is not as expected
     res.status(200).json({ success: false, error: "Invalid request body" })
   }
 }
 
-router.route("/").get(getWebhook).post(postWebhook)
+router.route("/").get(getWebhook).post(handleWebhook)
 
 module.exports = router

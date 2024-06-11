@@ -29,6 +29,15 @@ createRoom = async (req, res, next) => {
       })
     }
 
+    const roomIdExist = await Room.findOne({ roomId: roomId })
+
+    if (!roomIdExist) {
+      return res.status(400).json({
+        success: false,
+        message: "Room ID already exists",
+      })
+    }
+
     // Create new data object
     const newData = {
       roomName,
