@@ -17,6 +17,7 @@ const CashBackSchema = new mongoose.Schema({
   uploadDate: {
     type: Date,
     required: true,
+    default: Date.now,
   },
   totalAmount: {
     type: Number,
