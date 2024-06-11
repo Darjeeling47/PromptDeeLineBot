@@ -8,9 +8,25 @@ getWebhook = (req, res) => {
   return res.sendStatus(200)
 }
 
-postWebhook = (req, res) => {
-  const mess = Message.create({ message: req.body.events[0].message.text })
-  res.sendStatus(200).json({ success: true, data: mess })
+postWebhook = async (req, res) => {
+  // Check if req.body and req.body.events are defined
+  if (req.body && req.body.events && req.body.events.length > 0) {
+    const messageText = req.body.events[0].message.text || "No message"
+
+    try {
+      // Save the message to the database
+      const mess = await Message.create({ message: messageText })
+      // Respond with success
+      res.status(200).json({ success: true, data: mess })
+    } catch (error) {
+      // Handle errors
+      console.error("Error saving message to the database:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  } else {
+    // Respond with bad request status if req.body or req.body.events is not as expected
+    res.status(200).json({ success: false, error: "Invalid request body" })
+  }
 }
 
 router.route("/").get(getWebhook).post(postWebhook)
