@@ -8,10 +8,6 @@ const MessageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  lineRoomId: {
-    type: String,
-    default: "None",
-  },
 })
 
 module.exports = mongoose.model("Message", MessageSchema)
