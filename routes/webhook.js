@@ -19,9 +19,6 @@ postWebhook = async (req, res) => {
     const messageText = req.body.events[0].message.text || "No message"
 
     try {
-      // Save the message to the database
-      const mess = await Message.create({ message: messageText })
-
       let headers = {
         "Content-Type": "application/json",
         Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
@@ -49,6 +46,9 @@ postWebhook = async (req, res) => {
           console.log("status = " + res.statusCode)
         }
       )
+
+      // Save the message to the database
+      const mess = await Message.create({ message: messageText })
 
       // Respond with success
       res.status(200).json({ success: true, data: mess })
