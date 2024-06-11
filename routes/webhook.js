@@ -1,14 +1,14 @@
 const express = require("express")
 const Message = require("../models/Message")
 const router = express.Router()
+const bodyParser = require("body-parser")
+const request = require("request")
 
 getWebhook = (req, res) => {
   return res.sendStatus(200)
 }
 
 postWebhook = (req, res) => {
-  let request = require("request")
-
   const mess = Message.create(req.body.events[0].message.text)
 
   let reply_token = req.body.events[0].replyToken
