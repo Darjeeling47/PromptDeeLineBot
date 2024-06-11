@@ -50,7 +50,7 @@ app.use("/api/v1/shops", shops)
 app.use("/api/v1/rooms", rooms)
 app.use("/api/v1/cash-back", cashBack)
 app.post("/webhook", (req, res) => {
-  return res.status(200).json({ message: "ok" })
+  return res.sendStatus(200)
 })
 
 // setting up port ------------------------------------------------------------------------
