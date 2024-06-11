@@ -48,13 +48,13 @@ createLineRoom = async (message, reqBodyEvent) => {
     roomId: roomId,
     roomType: roomType,
   })
-  const res = request.post(
-    "http://localhost:5000/api/v1/rooms/",
+  const res = await request.post(
+    `${process.env.BACKEND_URL}/api/v1/rooms/`,
     { auth: { bearer: process.env.AUTH_TOKEN }, body: body },
     (err, res, body) => {}
   )
 
-  responseMessage = "ร้านค้า" + res.shopName + "ถูกเพิ่มเข้าห้องแล้ว"
+  responseMessage = "ร้านค้า" + "ถูกเพิ่มเข้าห้องแล้ว"
   sentmessage(responseMessage, reqBodyEvent.replyToken)
 }
 
