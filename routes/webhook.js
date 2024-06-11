@@ -8,6 +8,7 @@ getWebhook = (req, res) => {
 postWebhook = (req, res) => {
   let reply_token = req.body.events[0].replyToken
   reply(reply_token)
+  console.log(req.body.events[0])
   res.sendStatus(200)
 }
 
