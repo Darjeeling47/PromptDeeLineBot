@@ -8,9 +8,6 @@ app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-// Import controllers
-// const createLineRoom = require("../controllers/webhook/createLineRoom")
-
 // Handle webhook post request
 handleWebhook = async (req, res) => {
   // Check if req.body and req.body.events are defined
