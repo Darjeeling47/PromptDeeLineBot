@@ -7,12 +7,6 @@ getWebhook = (req, res) => {
 
 postWebhook = (req, res) => {
   let reply_token = req.body.events[0].replyToken
-  reply(reply_token)
-  console.log(req.body.events[0])
-  res.sendStatus(200)
-}
-
-function reply(reply_token) {
   let headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer {${process.env.LINE_CHANNEL_ACCESS_TOKEN}}`,
@@ -40,6 +34,7 @@ function reply(reply_token) {
       console.log("status = " + res.statusCode)
     }
   )
+  res.sendStatus(200)
 }
 
 router.route("/").get(getWebhook).post(postWebhook)
