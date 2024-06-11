@@ -8,12 +8,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // Import controllers
-const createLineRoom = require("../controllers/webhook/createLineRoom")
-
-//Dummy for line bot
-getWebhook = (req, res) => {
-  return res.sendStatus(200)
-}
+// const createLineRoom = require("../controllers/webhook/createLineRoom")
 
 // Handle webhook post request
 handleWebhook = async (req, res) => {
@@ -24,20 +19,42 @@ handleWebhook = async (req, res) => {
     // Save the message to the database
     const message = await Message.create({ message: messageText })
 
-    // if (messageText.include("Register Seller")) {
-    //   createLineRoom(messageText, req.body.events[0])
-    // } else if (messageText.include("My Score")) {
-    // } else {
-    // }
+    // headers for the request
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
+    }
+    // body for the request
+    let body = JSON.stringify({
+      replyToken: req.body.events[0].replyToken,
+      messages: [
+        {
+          type: "text",
+          text: "Hello, user",
+        },
+      ],
+    })
+
+    // send the request
+    request.post(
+      {
+        url: "https://api.line.me/v2/bot/message/reply",
+        headers: headers,
+        body: body,
+      },
+      (err, res, body) => {
+        console.log("status = " + res.statusCode)
+      }
+    )
 
     // Respond with success
-    res.status(200).json({ success: true, data: mess })
+    res.status(200)
   } else {
     // Respond with bad request status if req.body or req.body.events is not as expected
-    res.status(200).json({ success: false, error: "Invalid request body" })
+    res.status(200)
   }
 }
 
-router.route("/").get(getWebhook).post(handleWebhook)
+router.route("/").post(handleWebhook)
 
 module.exports = router
