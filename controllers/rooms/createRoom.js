@@ -7,10 +7,10 @@ const Shop = require("../../models/Shop")
 
 createRoom = async (req, res, next) => {
   // Get data from request body
-  const { roomName, shopCode, roomId } = req.body
+  const { roomName, shopCode, roomId, roomType } = req.body
 
   // Check if require data is provided
-  if (!roomName || !shopCode || !roomId) {
+  if (!roomName || !shopCode || !roomId || !roomType) {
     return res.status(400).json({
       success: false,
       message: "please provide all the require data of the room",
@@ -34,6 +34,7 @@ createRoom = async (req, res, next) => {
       roomName,
       shopId: shop._id,
       roomId,
+      roomType,
     }
 
     // create room

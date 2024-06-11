@@ -29,10 +29,18 @@ createShops = async (req, res, next) => {
     //Shop.create(data)
     // Validate and insert the data into the database
     const results = []
+    let shopIdArray = new Array(100000)
+
+    // Get all the shops
+    const shops = await Shop.find()
+    for (const shop of shops) {
+      shopIdArray[shop.shopCode] = shop._id
+    }
+
+    // Loop through the data
     for (const row of data) {
       try {
-        const checkShop = await Shop.findOne({ shopCode: row.shopCode })
-        if (!checkShop) {
+        if (shopIdArray[row.shopCode] == null) {
           Shop.create(row)
         }
       } catch (error) {

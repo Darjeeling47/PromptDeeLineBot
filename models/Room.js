@@ -6,6 +6,11 @@ const RoomSchema = new mongoose.Schema({
     ref: "Shop",
     required: true,
   },
+  roomType: {
+    type: String,
+    enum: ["user", "group"],
+    required: true,
+  },
   roomId: {
     type: String,
     required: true,
