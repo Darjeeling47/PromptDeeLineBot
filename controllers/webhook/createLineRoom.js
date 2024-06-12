@@ -31,14 +31,6 @@ exports.createLineRoom = async (req) => {
       )
 
       roomName = roomData.data.displayName
-
-      try {
-        await Message.create({
-          message: roomType + " " + roomId + " " + roomName + " " + shopCode,
-        })
-      } catch (err) {
-        console.log(err)
-      }
     } else if (req.body.events[0].source.type == "group") {
       roomType = "group"
       roomId = req.body.events[0].source.groupId
@@ -53,14 +45,6 @@ exports.createLineRoom = async (req) => {
       )
 
       roomName = roomData.data.groupName
-
-      try {
-        await Message.create({
-          message: roomType + " " + roomId + " " + roomData + " " + shopCode,
-        })
-      } catch (err) {
-        console.log(err)
-      }
     } else {
       return "error"
     }
