@@ -15,6 +15,15 @@ handleWebhook = async (req, res) => {
   if (req.body && req.body.events && req.body.events.length > 0) {
     const messageText = req.body.events[0].message.text || "No message"
 
+    let message = ""
+    if (req.body.events[0].message.text.split(" ")[0] === "Hey") {
+      message = "Fuck"
+    } else if (req.body.events[0].message.text.split(" ")[0] === "Love") {
+      message = "I Don't love you"
+    } else {
+      message = "else"
+    }
+
     // headers for the request
     let headers = {
       "Content-Type": "application/json",
@@ -26,7 +35,7 @@ handleWebhook = async (req, res) => {
       messages: [
         {
           type: "text",
-          text: req.body.events[0].message.text + " ตอบกลับครับ",
+          text: message + " ตอบกลับครับ",
         },
       ],
     })
