@@ -16,7 +16,7 @@ handleWebhook = async (req, res) => {
     const messageText = req.body.events[0].message.text || "No message"
 
     let message = ""
-    if (req.body.events[0].message.text.split(" ")[0] === "Hey") {
+    if (req.body.events[0].message.text.include("Hey")) {
       message = "Fuck"
     } else if (req.body.events[0].message.text.split(" ")[0] === "Love") {
       message = "I Don't love you"
