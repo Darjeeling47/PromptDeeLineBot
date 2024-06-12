@@ -21,14 +21,14 @@ exports.createLineRoom = async (req) => {
       roomType = "user"
       roomId = req.body.events[0].source.userId
 
-      const roomData = await axios.get({
+      const roomData = await request.get({
         url: `https://api.line.me/v2/bot/profile/${roomId}`,
         headers: {
           Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
         },
       })
 
-      roomName = roomData.displayName
+      roomName = roomData.toJSON().displayName
 
       try {
         await Message.create({
