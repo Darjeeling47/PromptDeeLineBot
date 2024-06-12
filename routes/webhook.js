@@ -31,7 +31,7 @@ handleWebhook = async (req, res) => {
     } else if (messageText.includes("My Score")) {
       message = "I Don't Have"
     } else {
-      message = "ขออภัย มีข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
+      res.status(200).json({ status: "no thing to do" })
     }
 
     try {
