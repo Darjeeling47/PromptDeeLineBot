@@ -1,4 +1,4 @@
-createLineRoom = async (req, res) => {
+exports.createLineRoom = async (req) => {
   try {
     const shopCode = req.body.events[0].message.text.split(" ")[2]
 
@@ -29,9 +29,8 @@ createLineRoom = async (req, res) => {
         console.log(res)
       }
     )
+    return "success"
   } catch (err) {
-    return res.status(200).json({ success: false, message: err.message })
+    return "error"
   }
 }
-
-module.exports = createLineRoom
