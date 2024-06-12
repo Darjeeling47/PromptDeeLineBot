@@ -21,20 +21,13 @@ exports.createLineRoom = async (req) => {
           "Content-Type": "application/json",
           Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
         },
-      })
+      }).displayName
 
       roomName = roomData.displayName
 
       try {
         await Message.create({
-          message:
-            roomType +
-            " " +
-            roomId +
-            " " +
-            roomData.displayName +
-            " " +
-            shopCode,
+          message: roomType + " " + roomId + " " + roomData + " " + shopCode,
         })
       } catch (err) {
         console.log(err)
