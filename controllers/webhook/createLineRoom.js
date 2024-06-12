@@ -1,3 +1,6 @@
+const request = require("request")
+const bodyParser = require("body-parser")
+
 exports.createLineRoom = async (req) => {
   try {
     const shopCode = req.body.events[0].message.text.split(" ")[2]
