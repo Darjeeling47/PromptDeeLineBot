@@ -50,10 +50,10 @@ exports.createLineRoom = async (req) => {
     }
 
     const createRoomData = {
-      roomName,
-      shopCode,
-      roomId,
-      roomType,
+      roomName: roomName.toString(),
+      shopCode: shopCode.toString(),
+      roomId: roomId.toString(),
+      roomType: roomType.toString(),
     }
 
     let res = null
