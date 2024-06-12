@@ -8,6 +8,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 const { createRoom } = require("../../controllers/rooms/createRoom")
+const { default: axios } = require("axios")
 
 exports.createLineRoom = async (req) => {
   try {
@@ -20,7 +21,7 @@ exports.createLineRoom = async (req) => {
       roomType = "user"
       roomId = req.body.events[0].source.userId
 
-      const roomData = await request.get({
+      const roomData = await axios.get({
         url: `https://api.line.me/v2/bot/profile/${roomId}`,
         headers: {
           Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
