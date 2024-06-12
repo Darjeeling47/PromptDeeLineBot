@@ -54,7 +54,7 @@ handleWebhook = async (req, res) => {
         headers,
       })
     } catch (error) {
-      await Message.create({ message: error.message })
+      // await Message.create({ message: error.message })
       res.status(200).json({ status: "error" })
     }
 

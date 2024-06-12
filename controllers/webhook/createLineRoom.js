@@ -64,7 +64,7 @@ exports.createLineRoom = async (req) => {
         return "เกิดข้อผิดพลาดไม่สามารถเชื่อมต่อกับห้องได้"
       }
     } catch (err) {
-      return "เกิดข้อผิดพลาดที่ระบบ สร้างห้องไม่สำเร็จ"
+      return err.message
     }
 
     return "ร้านค้าของคุณได้รับการลงทะเบียนเรียบร้อยแล้ว"
