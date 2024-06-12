@@ -46,7 +46,7 @@ exports.createLineRoom = async (req) => {
 
       roomName = roomData.data.groupName
     } else {
-      return "เกิดข้อผิดพลาด"
+      return "เกิดข้อผิดพลาด ห้องไม่ตรงตามกำหนด"
     }
 
     const createRoomData = {
@@ -64,7 +64,7 @@ exports.createLineRoom = async (req) => {
         return "เกิดข้อผิดพลาดไม่สามารถเชื่อมต่อกับห้องได้"
       }
     } catch (err) {
-      return "เกิดข้อผิดพลาดที่ระบบ"
+      return "เกิดข้อผิดพลาดที่ระบบ สร้างห้องไม่สำเร็จ"
     }
 
     return "ร้านค้าของคุณได้รับการลงทะเบียนเรียบร้อยแล้ว"

@@ -34,8 +34,6 @@ handleWebhook = async (req, res) => {
       message = "ขออภัย มีข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
     }
 
-    await Message.create({ message: message })
-
     try {
       let headers = {
         "Content-Type": "application/json",
