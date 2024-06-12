@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 const { createLineRoom } = require("../controllers/webhook/createLineRoom")
+const { default: axios } = require("axios")
 
 // Handle webhook post request
 handleWebhook = async (req, res) => {
@@ -23,10 +24,7 @@ handleWebhook = async (req, res) => {
     try {
       // Save the message to the database
       await Message.create({ message: messageText })
-    } catch (error) {
-      // Respond with error status if the message cannot be saved
-      res.status(200).json({ status: "error" })
-    }
+    } catch (error) {}
 
     if (req.body.events[0].message.text.includes("Register Seller")) {
       // webhookResponse = await createLineRoom(req)
@@ -57,16 +55,21 @@ handleWebhook = async (req, res) => {
       ],
     })
     // send the request
-    request.post(
-      {
-        url: "https://api.line.me/v2/bot/message/reply",
-        headers: headers,
-        body: body,
-      },
-      (err, res, body) => {
-        console.log(res)
-      }
-    )
+    try {
+      axios.post(
+        "https://api.line.me/v2/bot/message/reply",
+        {
+          headers: headers,
+          body: body,
+        },
+        (err, res, body) => {
+          console.log(res)
+        }
+      )
+    } catch (err) {
+      console.log(err)
+      res.status(200).json({ status: "error" })
+    }
 
     // Respond with success
     res.status(200).json({ status: "success" })
