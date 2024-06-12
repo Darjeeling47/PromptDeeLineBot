@@ -32,7 +32,7 @@ exports.createLineRoom = async (req) => {
             " " +
             roomId +
             " " +
-            roomData.toString() +
+            roomData.displayName +
             " " +
             shopCode,
         })
