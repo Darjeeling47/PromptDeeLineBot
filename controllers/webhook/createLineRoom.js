@@ -27,7 +27,14 @@ exports.createLineRoom = async (req) => {
 
       try {
         await Message.create({
-          message: roomType + " " + roomId + " " + roomData + " " + shopCode,
+          message:
+            roomType +
+            " " +
+            roomId +
+            " " +
+            roomData.toString() +
+            " " +
+            shopCode,
         })
       } catch (err) {
         console.log(err)
@@ -48,7 +55,14 @@ exports.createLineRoom = async (req) => {
 
       try {
         await Message.create({
-          message: roomType + " " + roomId + " " + roomData + " " + shopCode,
+          message:
+            roomType +
+            " " +
+            roomId +
+            " " +
+            roomData.toString() +
+            " " +
+            shopCode,
         })
       } catch (err) {
         console.log(err)
