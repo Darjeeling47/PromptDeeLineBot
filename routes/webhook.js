@@ -18,15 +18,15 @@ handleWebhook = async (req, res) => {
     const messageText = req.body.events[0].message.text || "No message"
     let webhookResponse = ""
 
-    let message = ""
-    if (req.body.events[0].message.text.includes("Register Seller")) {
-      webhookResponse = await createLineRoom(req)
-      // message = "What is your name?"
-    } else if (req.body.events[0].message.text.includes("My Score")) {
-      message = "I Don't Have"
-    } else {
-      message = "else"
-    }
+    // let message = ""
+    // if (req.body.events[0].message.text.includes("Register Seller")) {
+    //   webhookResponse = await createLineRoom(req)
+    //   // message = "What is your name?"
+    // } else if (req.body.events[0].message.text.includes("My Score")) {
+    //   message = "I Don't Have"
+    // } else {
+    //   message = "else"
+    // }
 
     if (webhookResponse == "error") {
       // headers for the request
