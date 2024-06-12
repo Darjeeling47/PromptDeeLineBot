@@ -56,6 +56,34 @@ handleWebhook = async (req, res) => {
         }
       )
       res.status(200).json({ status: "error" })
+    } else {
+      // headers for the request
+      let headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
+      }
+      // body for the request
+      let body = JSON.stringify({
+        replyToken: req.body.events[0].replyToken,
+        messages: [
+          {
+            type: "text",
+            text: "ผ่านการทำงาน",
+          },
+        ],
+      })
+      // send the request
+      request.post(
+        {
+          url: "https://api.line.me/v2/bot/message/reply",
+          headers: headers,
+          body: body,
+        },
+        (err, res, body) => {
+          console.log(res)
+        }
+      )
+      res.status(200).json({ status: "error" })
     }
 
     // try {
