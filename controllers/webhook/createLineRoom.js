@@ -50,10 +50,12 @@ exports.createLineRoom = async (req) => {
     }
 
     const createRoomData = {
-      roomName: roomName.toString(),
-      shopCode: shopCode.toString(),
-      roomId: roomId.toString(),
-      roomType: roomType.toString(),
+      body: {
+        shopCode: shopCode.toString(),
+        roomId: roomId.toString(),
+        roomType: roomType.toString(),
+        roomName: roomName.toString(),
+      },
     }
 
     Message.create({ message: JSON.stringify(createRoomData).toString() })
