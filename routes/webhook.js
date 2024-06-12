@@ -24,12 +24,15 @@ handleWebhook = async (req, res) => {
     try {
       // Save the message to the database
       await Message.create({ message: messageText })
-    } catch (error) {}
+    } catch (error) {
+      await Message.create({ message: "Error At Create Message" })
+      res.status(200).json({ status: "error" })
+    }
 
-    if (req.body.events[0].message.text.includes("Register Seller")) {
+    if (messageText.includes("Register Seller")) {
       // webhookResponse = await createLineRoom(req)
       message = "What is your name?"
-    } else if (req.body.events[0].message.text.includes("My Score")) {
+    } else if (messageText.includes("My Score")) {
       message = "I Don't Have"
     } else {
       message = "else"
@@ -56,12 +59,12 @@ handleWebhook = async (req, res) => {
     })
     // send the request
     try {
-      axios.post("https://api.line.me/v2/bot/message/reply", {
+      request.post({
+        url: "https://api.line.me/v2/bot/message/reply",
         headers: headers,
         body: body,
       })
     } catch (err) {
-      console.log(err)
       res.status(200).json({ status: "error" })
     }
 
