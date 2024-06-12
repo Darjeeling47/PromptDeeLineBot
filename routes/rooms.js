@@ -7,7 +7,7 @@ const { protect } = require("../middleware/auth")
 // Import controller
 const getRooms = require("../controllers/rooms/getRooms")
 const getRoom = require("../controllers/rooms/getRoom")
-const createRoom = require("../controllers/rooms/createRoom")
+const { createRoom } = require("../controllers/rooms/createRoom")
 const updateRoom = require("../controllers/rooms/updateRoom")
 const deleteRoom = require("../controllers/rooms/deleteRoom")
 

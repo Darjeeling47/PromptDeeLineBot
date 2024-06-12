@@ -5,7 +5,7 @@ const Shop = require("../../models/Shop")
 // @route : POST /api/v1/rooms/
 // @access : Private
 
-createRoom = async (req, res, next) => {
+exports.createRoom = async (req, res, next) => {
   // Get data from request body
   const { roomName, shopCode, roomId, roomType } = req.body
 
@@ -63,5 +63,3 @@ createRoom = async (req, res, next) => {
     return res.status(500).json({ success: false, message: err.message })
   }
 }
-
-module.exports = createRoom
