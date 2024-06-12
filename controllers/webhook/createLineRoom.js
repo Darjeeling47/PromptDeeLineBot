@@ -8,7 +8,7 @@ app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-const { createRoom } = require("../../controllers/rooms/createRoom")
+const { createRoomFunction } = require("../rooms/createRoomFunction")
 
 exports.createLineRoom = async (req) => {
   try {
@@ -49,27 +49,20 @@ exports.createLineRoom = async (req) => {
       return "เกิดข้อผิดพลาด ห้องไม่ตรงตามกำหนด"
     }
 
-    const createRoomData = {
-      body: {
-        shopCode: shopCode.toString(),
-        roomId: roomId.toString(),
-        roomType: roomType.toString(),
-        roomName: roomName.toString(),
-      },
-    }
-
     // Message.create({ message: JSON.stringify(createRoomData).toString() })
 
-    let res = null
-    try {
-      res = await createRoom(createRoomData)
+    const result = await createRoomFunction(
+      roomName,
+      shopCode,
+      roomId,
+      roomType
+    )
 
-      return res.toString()
-    } catch (err) {
-      return err.message
+    if (result.success === false) {
+      return result.message
     }
 
-    return "ร้านค้าของคุณได้รับการลงทะเบียนเรียบร้อยแล้ว"
+    return `ร้านค้า ${result.shopName} ได้รับการลงทะเบียนเรียบร้อยแล้ว`
   } catch (err) {
     return "เกิดข้อผิดพลาดที่ระบบ"
   }
