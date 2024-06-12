@@ -64,7 +64,7 @@ exports.createLineRoom = async (req) => {
     try {
       res = await createRoom(createRoomData)
 
-      return res
+      return res.toString()
     } catch (err) {
       return err.message
     }
