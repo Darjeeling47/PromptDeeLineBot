@@ -27,12 +27,12 @@ exports.createLineRoom = async (req) => {
         },
       })
 
-      roomName = roomData.displayName
+      roomName = roomData.toJSON().displayName
 
       try {
         await Message.create({
           message:
-            roomType + " " + roomId + " " + roomData.userId + " " + shopCode,
+            roomType + " " + roomId + " " + typeof roomData + " " + shopCode,
         })
       } catch (err) {
         console.log(err)
