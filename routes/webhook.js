@@ -18,6 +18,14 @@ handleWebhook = async (req, res) => {
     const messageText = req.body.events[0].message.text || "No message"
     let webhookResponse = ""
 
+    try {
+      // Save the message to the database
+      await Message.create({ message: messageText })
+    } catch (error) {
+      // Respond with error status if the message cannot be saved
+      res.status(200).json({ status: "error" })
+    }
+
     // let message = ""
     // if (req.body.events[0].message.text.includes("Register Seller")) {
     //   webhookResponse = await createLineRoom(req)
@@ -83,14 +91,6 @@ handleWebhook = async (req, res) => {
           console.log(res)
         }
       )
-      res.status(200).json({ status: "error" })
-    }
-
-    try {
-      // Save the message to the database
-      await Message.create({ message: messageText })
-    } catch (error) {
-      // Respond with error status if the message cannot be saved
       res.status(200).json({ status: "error" })
     }
 
