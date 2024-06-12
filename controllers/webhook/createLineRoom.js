@@ -2,13 +2,13 @@ const express = require("express")
 const request = require("request")
 const bodyParser = require("body-parser")
 const Message = require("../../models/Message")
+const { default: axios } = require("axios")
 
 app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 const { createRoom } = require("../../controllers/rooms/createRoom")
-const { default: axios } = require("axios")
 
 exports.createLineRoom = async (req) => {
   try {
@@ -21,14 +21,16 @@ exports.createLineRoom = async (req) => {
       roomType = "user"
       roomId = req.body.events[0].source.userId
 
-      const roomData = await request.get({
-        url: `https://api.line.me/v2/bot/profile/${roomId}`,
-        headers: {
-          Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
-        },
-      })
+      const roomData = await axios.get(
+        `https://api.line.me/v2/bot/profile/${roomId}`,
+        {
+          headers: {
+            Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
+          },
+        }
+      )
 
-      roomName = roomData.toJSON().displayName
+      roomName = roomData.data.displayName
 
       try {
         await Message.create({
@@ -41,14 +43,16 @@ exports.createLineRoom = async (req) => {
       roomType = "group"
       roomId = req.body.events[0].source.groupId
 
-      const roomData = request.get({
-        url: `https://api.line.me/v2/bot/group/${roomId}/summary`,
-        headers: {
-          Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
-        },
-      })
+      const roomData = await axios.get(
+        `https://api.line.me/v2/bot/group/${roomId}/summary`,
+        {
+          headers: {
+            Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
+          },
+        }
+      )
 
-      roomName = roomData.groupName
+      roomName = roomData.data.groupName
 
       try {
         await Message.create({
