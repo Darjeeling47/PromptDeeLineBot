@@ -27,7 +27,7 @@ exports.createLineRoom = async (req) => {
 
       try {
         await Message.create({
-          message: roomType + " " + roomId + " " + roomName + " " + shopCode,
+          message: roomType + " " + roomId + " " + roomData + " " + shopCode,
         })
       } catch (err) {
         console.log(err)
@@ -45,6 +45,14 @@ exports.createLineRoom = async (req) => {
       })
 
       roomName = roomData.groupName
+
+      try {
+        await Message.create({
+          message: roomType + " " + roomId + " " + roomData + " " + shopCode,
+        })
+      } catch (err) {
+        console.log(err)
+      }
     } else {
       return "error"
     }
