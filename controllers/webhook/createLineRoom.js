@@ -1,5 +1,6 @@
 const request = require("request")
 const bodyParser = require("body-parser")
+const Message = require("../../models/Message")
 
 const { createRoom } = require("../../controllers/rooms/createRoom")
 
@@ -23,6 +24,14 @@ exports.createLineRoom = async (req) => {
       })
 
       roomName = roomData.displayName
+
+      try {
+        await Message.create({
+          message: roomType + " " + roomId + " " + roomName + " " + shopCode,
+        })
+      } catch (err) {
+        console.log(err)
+      }
     } else if (req.body.events[0].source.type == "group") {
       roomType = "group"
       roomId = req.body.events[0].source.groupId
