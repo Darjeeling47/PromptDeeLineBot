@@ -64,9 +64,7 @@ exports.createLineRoom = async (req) => {
     try {
       res = await createRoom(createRoomData)
 
-      if (res.status != 200) {
-        return "เกิดข้อผิดพลาดไม่สามารถเชื่อมต่อกับห้องได้"
-      }
+      return res
     } catch (err) {
       return err.message
     }
