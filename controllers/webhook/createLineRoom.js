@@ -16,6 +16,10 @@ exports.createLineRoom = async (req) => {
 
       const roomData = request.get({
         url: `https://api.line.me/v2/bot/profile/${roomId}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
+        },
       })
 
       roomName = roomData.displayName
@@ -25,6 +29,10 @@ exports.createLineRoom = async (req) => {
 
       const roomData = request.get({
         url: `https://api.line.me/v2/bot/group/${roomId}/summary`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
+        },
       })
 
       roomName = roomData.groupName
