@@ -63,7 +63,6 @@ handleWebhook = async (req, res) => {
           console.log(res)
         }
       )
-      res.status(200).json({ status: "error" })
     } else {
       // headers for the request
       let headers = {
@@ -91,7 +90,6 @@ handleWebhook = async (req, res) => {
           console.log(res)
         }
       )
-      res.status(200).json({ status: "error" })
     }
 
     // Respond with success
