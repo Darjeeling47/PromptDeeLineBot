@@ -3,6 +3,7 @@ const Message = require("../models/Message")
 const router = express.Router()
 const bodyParser = require("body-parser")
 const request = require("request")
+const { stat } = require("fs")
 
 app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -25,7 +26,7 @@ handleWebhook = async (req, res) => {
       messages: [
         {
           type: "text",
-          text: "Hello, user",
+          text: req.body.events[0].message.text + " ตอบกลับครับ",
         },
       ],
     })
@@ -42,14 +43,19 @@ handleWebhook = async (req, res) => {
       }
     )
 
-    // Save the message to the database
-    await Message.create({ message: messageText })
+    try {
+      // Save the message to the database
+      await Message.create({ message: messageText })
+    } catch (error) {
+      // Respond with error status if the message cannot be saved
+      res.status(200).json({ status: "error" })
+    }
 
     // Respond with success
-    res.status(200)
+    res.status(200).json({ status: "success" })
   } else {
     // Respond with bad request status if req.body or req.body.events is not as expected
-    res.status(200)
+    res.status(200).json({ status: "bad request" })
   }
 }
 
