@@ -1,6 +1,11 @@
+const express = require("express")
 const request = require("request")
 const bodyParser = require("body-parser")
 const Message = require("../../models/Message")
+
+app = express()
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 const { createRoom } = require("../../controllers/rooms/createRoom")
 
@@ -21,13 +26,20 @@ exports.createLineRoom = async (req) => {
           "Content-Type": "application/json",
           Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
         },
-      }).displayName
+      })
 
       roomName = roomData.displayName
 
       try {
         await Message.create({
-          message: roomType + " " + roomId + " " + roomData + " " + shopCode,
+          message:
+            roomType +
+            " " +
+            roomId +
+            " " +
+            roomData.toString() +
+            " " +
+            shopCode,
         })
       } catch (err) {
         console.log(err)
