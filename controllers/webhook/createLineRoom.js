@@ -56,6 +56,8 @@ exports.createLineRoom = async (req) => {
       roomType: roomType.toString(),
     }
 
+    Message.create({ message: JSON.stringify(createRoomData).toString() })
+
     let res = null
     try {
       res = await createRoom(createRoomData)
