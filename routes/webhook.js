@@ -18,10 +18,7 @@ handleWebhook = async (req, res) => {
     const messageText = req.body.events[0].message.text || "No message"
 
     let message = ""
-    if (
-      req.body.events[0].message.text.includes("Register Seller") &&
-      req.body.events[0].message.text.split(" ").length == 3
-    ) {
+    if (req.body.events[0].message.text.includes("Register Seller")) {
       createLineRoom(req, res)
       message = "What is your name?"
     } else if (req.body.events[0].message.text.includes("My Score")) {
