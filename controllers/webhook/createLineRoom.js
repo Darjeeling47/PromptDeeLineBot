@@ -67,34 +67,7 @@ exports.createLineRoom = async (req) => {
       return "error"
     }
 
-    // headers for the request
-    let headers = {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
-    }
-    // body for the request
-    let body = JSON.stringify({
-      replyToken: req.body.events[0].replyToken,
-      messages: [
-        {
-          type: "text",
-          text: "คุณลงทะเบียนร้านค้า " + res.shopName + " สำเร็จแล้ว",
-        },
-      ],
-    })
-
-    // send the request
-    request.post(
-      {
-        url: "https://api.line.me/v2/bot/message/reply",
-        headers: headers,
-        body: body,
-      },
-      (err, res, body) => {
-        console.log(res)
-      }
-    )
-    return "success"
+    return "ร้านค้าของคุณได้รับการลงทะเบียนเรียบร้อยแล้ว"
   } catch (err) {
     return "error"
   }
