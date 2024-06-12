@@ -86,13 +86,13 @@ handleWebhook = async (req, res) => {
       res.status(200).json({ status: "error" })
     }
 
-    // try {
-    //   // Save the message to the database
-    //   await Message.create({ message: messageText })
-    // } catch (error) {
-    //   // Respond with error status if the message cannot be saved
-    //   res.status(200).json({ status: "error" })
-    // }
+    try {
+      // Save the message to the database
+      await Message.create({ message: messageText })
+    } catch (error) {
+      // Respond with error status if the message cannot be saved
+      res.status(200).json({ status: "error" })
+    }
 
     // Respond with success
     res.status(200).json({ status: "success" })
