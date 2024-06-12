@@ -23,7 +23,6 @@ exports.createLineRoom = async (req) => {
       const roomData = request.get({
         url: `https://api.line.me/v2/bot/profile/${roomId}`,
         headers: {
-          "Content-Type": "application/json",
           Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
         },
       })
@@ -32,7 +31,14 @@ exports.createLineRoom = async (req) => {
 
       try {
         await Message.create({
-          message: roomType + " " + roomId + " " + roomData + " " + shopCode,
+          message:
+            roomType +
+            " " +
+            roomId +
+            " " +
+            roomData.displayName +
+            " " +
+            shopCode,
         })
       } catch (err) {
         console.log(err)
@@ -44,7 +50,6 @@ exports.createLineRoom = async (req) => {
       const roomData = request.get({
         url: `https://api.line.me/v2/bot/group/${roomId}/summary`,
         headers: {
-          "Content-Type": "application/json",
           Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
         },
       })
