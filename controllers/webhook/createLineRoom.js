@@ -20,19 +20,18 @@ exports.createLineRoom = async (req) => {
       roomType = "user"
       roomId = req.body.events[0].source.userId
 
-      const roomData = request.get({
+      const roomData = await request.get({
         url: `https://api.line.me/v2/bot/profile/${roomId}`,
         headers: {
           Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
         },
       })
 
-      roomName = roomData.toJSON().displayName
+      roomName = roomData.displayName
 
       try {
         await Message.create({
-          message:
-            roomType + " " + roomId + " " + typeof roomData + " " + shopCode,
+          message: roomType + " " + roomId + " " + roomName + " " + shopCode,
         })
       } catch (err) {
         console.log(err)
