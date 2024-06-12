@@ -56,16 +56,10 @@ handleWebhook = async (req, res) => {
     })
     // send the request
     try {
-      axios.post(
-        "https://api.line.me/v2/bot/message/reply",
-        {
-          headers: headers,
-          body: body,
-        },
-        (err, res, body) => {
-          console.log(res)
-        }
-      )
+      axios.post("https://api.line.me/v2/bot/message/reply", {
+        headers: headers,
+        body: body,
+      })
     } catch (err) {
       console.log(err)
       res.status(200).json({ status: "error" })
