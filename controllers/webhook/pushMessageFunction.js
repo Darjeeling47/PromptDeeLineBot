@@ -6,14 +6,11 @@ const pushMessageFunction = async (message, roomId) => {
     "Content-Type": "application/json",
     Authorization: `Bearer ${process.env.LINE_CHANNEL_ACCESS_TOKEN}`,
   }
+
+  // message must be an object in form of line message object
   const data = {
     to: roomId,
-    messages: [
-      {
-        type: "text",
-        text: message,
-      },
-    ],
+    messages: [message],
   }
 
   try {

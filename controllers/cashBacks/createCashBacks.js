@@ -4,6 +4,7 @@ const Shop = require("../../models/Shop")
 const { pushMessageFunction } = require("../webhook/pushMessageFunction")
 const Room = require("../../models/Room")
 const { dateFormatter } = require("../../utils/dateFormatter")
+const { cashBackFlexMessage } = require("./cashBackFlexMessage")
 
 createCashBacks = async (req, res, next) => {
   try {
@@ -122,19 +123,21 @@ createCashBacks = async (req, res, next) => {
         // Update the total amount of cashbacks
         totalAmountOfCashBacks += cashBack.totalAmount
 
-        // Line notification
+        //Line notification
         // Sent message to shop
-        const messageToShop = `เงินโอนคืนส่วนลดของร้านค้า ${
-          cashBack.shopName
-        } ด้วยจำนวนเงิน ${cashBack.totalAmount} บาท รอบวันที่ ${dateFormatter(
-          cashBack.cycleDate.toISOString()
-        )} จะถูกโอนในวันที่ ${dateFormatter(
-          cashBack.payDate.toISOString()
-        )} โปรดตรวจสอบบัญชีของคุณอีกครั้ง 🥳🥳🥳`
         const room = await Room.find({ shopId: cashBack.shopId })
+        if (room) {
+          const messageToShop = await cashBackFlexMessage(
+            cashBack.shopName,
+            dateFormatter(cashBack.cycleDate),
+            dateFormatter(cashBack.payDate),
+            cashBack.orders,
+            cashBack.totalAmount
+          )
 
-        for (let i = 0; i < room.length; i++) {
-          await pushMessageFunction(messageToShop, room[i].roomId)
+          for (let i = 0; i < room.length; i++) {
+            await pushMessageFunction(messageToShop, room[i].roomId)
+          }
         }
 
         // Reset the cashback object
@@ -195,17 +198,19 @@ createCashBacks = async (req, res, next) => {
 
       //Line notification
       // Sent message to shop
-      const messageToShop = `เงินโอนคืนส่วนลดของร้านค้า ${
-        cashBack.shopName
-      } ด้วยจำนวนเงิน ${cashBack.totalAmount} บาท รอบวันที่ ${dateFormatter(
-        cashBack.cycleDate.toISOString()
-      )} จะถูกโอนในวันที่ ${dateFormatter(
-        cashBack.payDate.toISOString()
-      )} โปรดตรวจสอบบัญชีของคุณอีกครั้ง 🥳🥳🥳`
       const room = await Room.find({ shopId: cashBack.shopId })
+      if (room) {
+        const messageToShop = await cashBackFlexMessage(
+          cashBack.shopName,
+          dateFormatter(cashBack.cycleDate),
+          dateFormatter(cashBack.payDate),
+          cashBack.orders,
+          cashBack.totalAmount
+        )
 
-      for (let i = 0; i < room.length; i++) {
-        await pushMessageFunction(messageToShop, room[i].roomId)
+        for (let i = 0; i < room.length; i++) {
+          await pushMessageFunction(messageToShop, room[i].roomId)
+        }
       }
     }
 
