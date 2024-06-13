@@ -21,7 +21,7 @@ exports.deleteLineRoom = async (req) => {
       return "เกิดข้อผิดพลาด ห้องไม่ตรงตามกำหนด"
     }
 
-    const room = await Room.find({ roomId: roomId })
+    const room = await Room.findOne({ roomId: roomId })
     if (!room) {
       return "ไม่พบห้อง"
     }
