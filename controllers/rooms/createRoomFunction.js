@@ -8,7 +8,7 @@ const createRoomFunction = async (roomName, shopCode, roomId, roomType) => {
   if (!roomName || !shopCode || !roomId || !roomType) {
     return {
       success: false,
-      message: "Please provide all the required data of the room",
+      message: "โปรดใส่ข้อมูลให้ครบถ้วน",
     }
   }
 
@@ -20,7 +20,7 @@ const createRoomFunction = async (roomName, shopCode, roomId, roomType) => {
     if (!shop) {
       return {
         success: false,
-        message: "Cannot find shop",
+        message: "ไม่สามารถหาร้านค้าได้",
       }
     }
 
@@ -29,7 +29,7 @@ const createRoomFunction = async (roomName, shopCode, roomId, roomType) => {
     if (roomIdExist) {
       return {
         success: false,
-        message: "Room ID already exists",
+        message: "ห้องแชทนี้มีอยู่แล้ว",
       }
     }
 

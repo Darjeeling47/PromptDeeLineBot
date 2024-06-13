@@ -45,7 +45,7 @@ handleWebhook = async (req, res) => {
         messages: [
           {
             type: "text",
-            text: message,
+            text: "<ข้อความจากระบบอัตโนมัติ> " + message,
           },
         ],
       })
