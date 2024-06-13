@@ -29,10 +29,18 @@ handleWebhook = async (req, res) => {
         roomId = await Room.findOne({
           roomId: req.body.events[0].source.userId,
         })
+
+        if (!roomId) {
+          roomId = req.body.events[0].source.userId
+        }
       } else if (req.body.events[0].source.type == "group") {
         roomId = await Room.findOne({
           roomId: req.body.events[0].source.groupId,
         })
+
+        if (!roomId) {
+          roomId = req.body.events[0].source.groupId
+        }
       } else {
         return "เกิดข้อผิดพลาด ห้องไม่ตรงตามกำหนด"
       }

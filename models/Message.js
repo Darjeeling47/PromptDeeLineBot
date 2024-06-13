@@ -9,9 +9,9 @@ const MessageSchema = new mongoose.Schema({
     default: Date.now,
   },
   roomId: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Room",
+    type: String,
     required: true,
+    default: null,
   },
 })
 
