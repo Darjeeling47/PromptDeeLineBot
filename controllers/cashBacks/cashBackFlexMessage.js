@@ -91,7 +91,7 @@ const cashBackFlexMessage = async (
           },
           {
             type: "text",
-            text: "เบอร์โทร : 000-000-0000",
+            text: "เบอร์โทร : 080-529-7762",
             size: "xs",
             color: "#303030",
           },

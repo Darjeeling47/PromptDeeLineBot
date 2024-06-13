@@ -17,12 +17,22 @@ createCashBacks = async (req, res, next) => {
     const sheets = file.SheetNames
     let data = []
     let shopIdArray = new Array(100000)
+    let roomIdArray = new Array(100000)
 
     // Get all the shops
     const shops = await Shop.find()
     for (const shop of shops) {
       shopData = [shop._id, shop.name]
       shopIdArray[shop.shopCode] = shopData
+    }
+
+    // Get all the room
+    const room = await Room.find().populate("shopId")
+    for (const roomData of room) {
+      if (roomIdArray[roomData.shopId.shopCode] == null) {
+        roomIdArray[roomData.shopId.shopCode] = []
+      }
+      roomIdArray[roomData.shopId.shopCode].push(roomData.roomId)
     }
 
     // Loop through the sheets
@@ -110,6 +120,7 @@ createCashBacks = async (req, res, next) => {
     let cashBacks = []
 
     // Loop through the data
+    let i = 0
     for (const row of data) {
       // Check if the current shop id, cycle date, and pay date is different from the previous row
       if (
@@ -125,6 +136,8 @@ createCashBacks = async (req, res, next) => {
 
         //Line notification
         // Sent message to shop
+
+        // Implement by using another roomIdArray
         const room = await Room.find({ shopId: cashBack.shopId })
         if (room) {
           const messageToShop = await cashBackFlexMessage(
@@ -136,7 +149,8 @@ createCashBacks = async (req, res, next) => {
           )
 
           for (let i = 0; i < room.length; i++) {
-            await pushMessageFunction(messageToShop, room[i].roomId)
+            pushMessageFunction(messageToShop, room[i].roomId)
+            console.log("push message to " + room[i].roomId)
           }
         }
 
@@ -209,7 +223,8 @@ createCashBacks = async (req, res, next) => {
         )
 
         for (let i = 0; i < room.length; i++) {
-          await pushMessageFunction(messageToShop, room[i].roomId)
+          pushMessageFunction(messageToShop, room[i].roomId)
+          console.log("push message to " + room[i].roomId)
         }
       }
     }

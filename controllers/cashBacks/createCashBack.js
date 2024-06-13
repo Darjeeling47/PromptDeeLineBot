@@ -47,7 +47,6 @@ createCashBack = async (req, res, next) => {
     const cashBack = await CashBack.create(newCashBack)
 
     const room = await Room.find({ shopId: newCashBack.shopId })
-
     if (room) {
       const messageToShop = await cashBackFlexMessage(
         shop.name,
@@ -58,7 +57,13 @@ createCashBack = async (req, res, next) => {
       )
 
       for (let i = 0; i < room.length; i++) {
-        await pushMessageFunction(messageToShop, room[i].roomId)
+        await pushMessageFunction(
+          {
+            type: "text",
+            text: "<Bot> 111",
+          },
+          room[i].roomId
+        )
       }
     }
 
