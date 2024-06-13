@@ -35,7 +35,7 @@ handleWebhook = async (req, res) => {
     } else if (messageText.includes("My Score")) {
       message = await getShopScore(req)
     } else {
-      res.status(200).json({ status: "no thing to do" })
+      return res.status(200).json({ status: "no thing to do" })
     }
 
     try {
@@ -63,7 +63,7 @@ handleWebhook = async (req, res) => {
     }
 
     // Respond with success
-    res.status(200).json({ status: "success" })
+    return res.status(200).json({ status: "success" })
   } else {
     // Respond with bad request status if req.body or req.body.events is not as expected
     res.status(200).json({ status: "bad request" })
