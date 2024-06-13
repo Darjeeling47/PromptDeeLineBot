@@ -11,6 +11,7 @@ app.use(bodyParser.json())
 
 const { createLineRoom } = require("../controllers/webhook/createLineRoom")
 const { deleteLineRoom } = require("../controllers/webhook/deleteLineRoom")
+const { getShopScore } = require("../controllers/webhook/getShopScore")
 const { default: axios } = require("axios")
 
 // Handle webhook post request
@@ -32,7 +33,7 @@ handleWebhook = async (req, res) => {
     } else if (messageText.includes("Unregistered Seller")) {
       message = await deleteLineRoom(req)
     } else if (messageText.includes("My Score")) {
-      message = "I Don't Have"
+      message = await getShopScore(req)
     } else {
       res.status(200).json({ status: "no thing to do" })
     }
