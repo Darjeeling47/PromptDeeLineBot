@@ -1,6 +1,9 @@
 const reader = require("xlsx")
 const CashBack = require("../../models/CashBack")
 const Shop = require("../../models/Shop")
+const { pushMessageFunction } = require("../webhook/pushMessageFunction")
+const Room = require("../../models/Room")
+const { dateFormatter } = require("../../utils/dateFormatter")
 
 createCashBacks = async (req, res, next) => {
   try {
@@ -17,7 +20,8 @@ createCashBacks = async (req, res, next) => {
     // Get all the shops
     const shops = await Shop.find()
     for (const shop of shops) {
-      shopIdArray[shop.shopCode] = shop._id
+      shopData = [shop._id, shop.name]
+      shopIdArray[shop.shopCode] = shopData
     }
 
     // Loop through the sheets
@@ -64,7 +68,7 @@ createCashBacks = async (req, res, next) => {
           }
 
           // Check if the shop exists
-          if (shopIdArray[cashBackRaw.shopCode] == null) {
+          if (shopIdArray[cashBackRaw.shopCode][0] == null) {
             return res.status(404).json({
               success: false,
               message: "Shop not found",
@@ -72,7 +76,8 @@ createCashBacks = async (req, res, next) => {
           }
 
           // Assign the shop id to the raw cashback object
-          cashBackRaw.shopId = shopIdArray[cashBackRaw.shopCode]
+          cashBackRaw.shopId = shopIdArray[cashBackRaw.shopCode][0]
+          cashBackRaw.shopName = shopIdArray[cashBackRaw.shopCode][1]
 
           // Push the raw cashback object to the data array
           data.push(cashBackRaw)
@@ -93,7 +98,7 @@ createCashBacks = async (req, res, next) => {
       return a.orderCode.localeCompare(b.orderCode)
     })
 
-    console.log(data)
+    // console.log(data)
 
     // Insert the data into the database
     let cashBack = null
@@ -117,11 +122,25 @@ createCashBacks = async (req, res, next) => {
         // Update the total amount of cashbacks
         totalAmountOfCashBacks += cashBack.totalAmount
 
-        //Line notification
+        // Line notification
+        // Sent message to shop
+        const messageToShop = `เงินโอนคืนส่วนลดของร้านค้า ${
+          cashBack.shopName
+        } ด้วยจำนวนเงิน ${cashBack.totalAmount} บาท รอบวันที่ ${dateFormatter(
+          cashBack.cycleDate.toISOString()
+        )} จะถูกโอนในวันที่ ${dateFormatter(
+          cashBack.payDate.toISOString()
+        )} โปรดตรวจสอบบัญชีของคุณอีกครั้ง 🥳🥳🥳`
+        const room = await Room.find({ shopId: cashBack.shopId })
+
+        for (let i = 0; i < room.length; i++) {
+          await pushMessageFunction(messageToShop, room[i].roomId)
+        }
 
         // Reset the cashback object
         cashBack = {
           shopId: row.shopId,
+          shopName: row.shopName,
           cycleDate: row.cycleDate,
           payDate: row.payDate,
           orders: [],
@@ -146,6 +165,7 @@ createCashBacks = async (req, res, next) => {
         if (!cashBack) {
           cashBack = {
             shopId: row.shopId,
+            shopName: row.shopName,
             cycleDate: row.cycleDate,
             payDate: row.payDate,
             orders: [],
@@ -172,6 +192,21 @@ createCashBacks = async (req, res, next) => {
     if (cashBack) {
       cashBacks.push(cashBack)
       totalAmountOfCashBacks += cashBack.totalAmount
+
+      //Line notification
+      // Sent message to shop
+      const messageToShop = `เงินโอนคืนส่วนลดของร้านค้า ${
+        cashBack.shopName
+      } ด้วยจำนวนเงิน ${cashBack.totalAmount} บาท รอบวันที่ ${dateFormatter(
+        cashBack.cycleDate.toISOString()
+      )} จะถูกโอนในวันที่ ${dateFormatter(
+        cashBack.payDate.toISOString()
+      )} โปรดตรวจสอบบัญชีของคุณอีกครั้ง 🥳🥳🥳`
+      const room = await Room.find({ shopId: cashBack.shopId })
+
+      for (let i = 0; i < room.length; i++) {
+        await pushMessageFunction(messageToShop, room[i].roomId)
+      }
     }
 
     const createdCashBacks = await CashBack.insertMany(cashBacks)

@@ -1,5 +1,8 @@
 const CashBack = require("../../models/CashBack")
+const Room = require("../../models/Room")
 const Shop = require("../../models/Shop")
+const { pushMessageFunction } = require("../webhook/pushMessageFunction")
+const { dateFormatter } = require("../../utils/dateFormatter")
 
 // @desc : Create a cashback
 // @route : POST /api/v1/cashbacks/
@@ -41,6 +44,19 @@ createCashBack = async (req, res, next) => {
     }
 
     const cashBack = await CashBack.create(newCashBack)
+
+    const messageToShop = `เงินโอนคืนส่วนลดของร้านค้า ${
+      shop.name
+    } ด้วยจำนวนเงิน ${cashBack.totalAmount} บาท รอบวันที่ ${dateFormatter(
+      cashBack.cycleDate.toISOString()
+    )} จะถูกโอนในวันที่ ${dateFormatter(
+      cashBack.payDate.toISOString()
+    )} โปรดตรวจสอบบัญชีของคุณอีกครั้ง 🥳🥳🥳`
+    const room = await Room.find({ shopId: shop._id })
+
+    for (let i = 0; i < room.length; i++) {
+      await pushMessageFunction(messageToShop, room[i].roomId)
+    }
 
     return res.status(201).json({
       cashBack: {
