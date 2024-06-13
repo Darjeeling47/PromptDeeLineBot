@@ -24,29 +24,25 @@ handleWebhook = async (req, res) => {
 
     try {
       // Save the message to the database
-      let roomId = ""
+      let roomId = "Anonymous"
       if (req.body.events[0].source.type == "user") {
-        roomId = (
-          await Room.findOne({
-            roomId: req.body.events[0].source.userId,
-          })
-        )._id
-
-        if (!roomId) {
-          roomId = req.body.events[0].source.userId
-        }
+        // roomId = (
+        //   await Room.findOne({
+        //     roomId: req.body.events[0].source.userId,
+        //   })
+        // )._id
+        // if (!roomId) {
+        //   roomId = req.body.events[0].source.userId
+        // }
       } else if (req.body.events[0].source.type == "group") {
-        roomId = (
-          await Room.findOne({
-            roomId: req.body.events[0].source.groupId,
-          })
-        )._id
-
-        if (!roomId) {
-          roomId = req.body.events[0].source.groupId
-        }
-      } else {
-        return "เกิดข้อผิดพลาด ห้องไม่ตรงตามกำหนด"
+        // roomId = (
+        //   await Room.findOne({
+        //     roomId: req.body.events[0].source.groupId,
+        //   })
+        // )._id
+        // if (!roomId) {
+        //   roomId = req.body.events[0].source.groupId
+        // }
       }
 
       await Message.create({ message: messageText, roomId: roomId })
