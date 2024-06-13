@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 const { createLineRoom } = require("../controllers/webhook/createLineRoom")
+const { deleteLineRoom } = require("../controllers/webhook/deleteLineRoom")
 const { default: axios } = require("axios")
 
 // Handle webhook post request
@@ -28,8 +29,8 @@ handleWebhook = async (req, res) => {
 
     if (messageText.includes("Register Seller")) {
       message = await createLineRoom(req)
-    } else if (messageText.includes("Unregister Seller")) {
-      message = "Unregister Seller"
+    } else if (messageText.includes("Unregistered Seller")) {
+      message = await deleteLineRoom(req)
     } else if (messageText.includes("My Score")) {
       message = "I Don't Have"
     } else {
