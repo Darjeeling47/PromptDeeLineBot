@@ -26,6 +26,8 @@ exports.deleteLineRoom = async (req) => {
       return "ไม่พบห้อง"
     }
 
+    return room.roomName
+
     await room.deleteOne()
     return "ยกเลิกการเชื่อมต่อร้านค้าสำเร็จ"
   } catch (err) {
