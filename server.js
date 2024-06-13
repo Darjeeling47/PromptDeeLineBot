@@ -3,6 +3,7 @@ const express = require("express")
 const dotenv = require("dotenv")
 const cookieParser = require("cookie-parser")
 const connectDB = require("./config/db")
+const path = require("path")
 
 //Security --------------------------------------------------------------------------------
 const mongoSanitize = require("express-mongo-sanitize")
@@ -36,6 +37,9 @@ app.use(xss())
 app.use(limiter)
 app.use(hpp())
 app.use(cors())
+
+// Serve static files from the campgroundImage directory
+app.use("/images", express.static(path.join(__dirname, "image")))
 
 // Routing --------------------------------------------------------------------------------
 const auth = require("./routes/auth")
