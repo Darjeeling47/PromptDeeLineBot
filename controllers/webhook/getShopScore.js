@@ -30,7 +30,7 @@ exports.getShopScore = async (req) => {
       return "ไม่สามารถหาร้านค้าได้"
     }
 
-    return `คะแนนร้านค้าของคุณคือ ${shop.score} ดาว`
+    return `คะแนนร้านค้าของคุณคือ ${shop.score} คะแนน`
   } catch (err) {
     return "เกิดข้อผิดพลาด"
   }
