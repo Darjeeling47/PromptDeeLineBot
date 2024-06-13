@@ -23,10 +23,8 @@ exports.deleteLineRoom = async (req) => {
 
     const room = await Room.findOne({ roomId: roomId })
     if (!room) {
-      return "ไม่พบห้อง"
+      return "ห้องนี้ไม่มีการเชื่อมต่อกับร้านค้า"
     }
-
-    return room.roomName
 
     await room.deleteOne()
     return "ยกเลิกการเชื่อมต่อร้านค้าสำเร็จ"
