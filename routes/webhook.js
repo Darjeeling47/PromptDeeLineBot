@@ -28,6 +28,8 @@ handleWebhook = async (req, res) => {
 
     if (messageText.includes("Register Seller")) {
       message = await createLineRoom(req)
+    } else if (messageText.includes("Unregister Seller")) {
+      message = "Unregister Seller"
     } else if (messageText.includes("My Score")) {
       message = "I Don't Have"
     } else {
@@ -45,7 +47,7 @@ handleWebhook = async (req, res) => {
         messages: [
           {
             type: "text",
-            text: "<ข้อความจากระบบอัตโนมัติ> " + message,
+            text: "<Bot> " + message,
           },
         ],
       })
