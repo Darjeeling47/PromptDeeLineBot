@@ -1,5 +1,6 @@
 const express = require("express")
 const Message = require("../models/Message")
+const Room = require("../models/Room")
 const router = express.Router()
 const bodyParser = require("body-parser")
 const request = require("request")
@@ -23,7 +24,20 @@ handleWebhook = async (req, res) => {
 
     try {
       // Save the message to the database
-      await Message.create({ message: messageText })
+      let roomId = ""
+      if (req.body.events[0].source.type == "user") {
+        roomId = await Room.findOne({
+          roomId: req.body.events[0].source.userId,
+        })
+      } else if (req.body.events[0].source.type == "group") {
+        roomId = await Room.findOne({
+          roomId: req.body.events[0].source.groupId,
+        })
+      } else {
+        return "เกิดข้อผิดพลาด ห้องไม่ตรงตามกำหนด"
+      }
+
+      await Message.create({ message: messageText, roomId: roomId })
     } catch (error) {
       res.status(200).json({ status: "error" })
     }
