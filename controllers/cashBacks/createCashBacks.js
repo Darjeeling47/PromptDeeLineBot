@@ -150,7 +150,6 @@ createCashBacks = async (req, res, next) => {
 
           for (let i = 0; i < room.length; i++) {
             pushMessageFunction(messageToShop, room[i].roomId)
-            console.log("push message to " + room[i].roomId)
           }
         }
 
