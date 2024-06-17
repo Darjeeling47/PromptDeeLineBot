@@ -43,7 +43,10 @@ login = async (req, res, next) => {
       options.secure = true
     }
 
-    res.status(200).cookie("token", token, options).json({ token: token })
+    res
+      .status(200)
+      .cookie("token", token, options)
+      .json({ token: token, email: email })
   } catch (err) {
     res.status(500).json({ success: false, message: err.message })
   }
