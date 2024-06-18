@@ -57,13 +57,7 @@ createCashBack = async (req, res, next) => {
       )
 
       for (let i = 0; i < room.length; i++) {
-        await pushMessageFunction(
-          {
-            type: "text",
-            text: "<Bot> 111",
-          },
-          room[i].roomId
-        )
+        await pushMessageFunction(messageToShop, room[i].roomId)
       }
     }
 
