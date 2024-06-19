@@ -5,7 +5,6 @@ const dateFormatter = (date) => {
     year: "numeric",
     month: "long",
     day: "numeric",
-    weekday: "long",
   })
 
   return result
