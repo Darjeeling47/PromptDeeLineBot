@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const Room = require("../../models/Room")
 const Shop = require("../../models/Shop")
+const util = require("util")
 
 // @desc : Get all rooms
 // @route : GET /api/v1/rooms/
@@ -32,13 +33,18 @@ getRooms = async (req, res, next) => {
       queryStr = JSON.stringify(queryStr)
       reqQuery = getAgreegateSearchQuery(
         ["roomName", "shops.name", "shops.shopCode"],
-        ["tag"],
-        queryStr,
         req.query.search
       )
     } else {
       reqQuery = JSON.parse(queryStr)
     }
+
+    // Pagination
+    const page = parseInt(req.query.page, 10) || 1
+    const limit = parseInt(req.query.limit, 10) || 10
+    const startIndex = (page - 1) * limit
+    const endIndex = page * limit
+    const total = await Room.countDocuments(reqQuery)
 
     query = Room.aggregate([
       {
@@ -56,7 +62,10 @@ getRooms = async (req, res, next) => {
         },
       },
       {
-        $match: reqQuery,
+        $skip: startIndex,
+      },
+      {
+        $limit: limit,
       },
       {
         $sort: {
@@ -65,14 +74,7 @@ getRooms = async (req, res, next) => {
       },
     ])
 
-    // Pagination
-    const page = parseInt(req.query.page, 10) || 1
-    const limit = parseInt(req.query.limit, 10) || 10
-    const startIndex = (page - 1) * limit
-    const endIndex = page * limit
-    const total = await Room.countDocuments(reqQuery)
-
-    query = query.skip(startIndex).limit(limit)
+    // console.log(util.inspect(query, false, null, true))
 
     const rooms = await query
 
@@ -102,12 +104,7 @@ getRooms = async (req, res, next) => {
   }
 }
 
-function getAgreegateSearchQuery(
-  stringSearchField,
-  arraySearchField,
-  queryStr,
-  searchString
-) {
+function getAgreegateSearchQuery(stringSearchField, searchString) {
   let searchParam = {
     $or: [],
   }
@@ -118,21 +115,9 @@ function getAgreegateSearchQuery(
     searchParam.$or.push(newObj)
   }
 
-  for (let arrayField in arraySearchField) {
-    const newObj = {}
-    newObj[arraySearchField[arrayField]] = {
-      $elemMatch: { name: { $regex: searchString } },
-    }
-    searchParam.$or.push(newObj)
-  }
+  // console.log(util.inspect(searchParam, false, null, true))
 
-  let newqueryStr = {
-    $and: [JSON.parse(queryStr), searchParam],
-  }
-
-  queryStr = newqueryStr
-
-  return queryStr
+  return searchParam
 }
 
 module.exports = getRooms
