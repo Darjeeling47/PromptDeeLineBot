@@ -1,3 +1,4 @@
+const mongoose = require("mongoose")
 const Room = require("../../models/Room")
 const Shop = require("../../models/Shop")
 
@@ -30,8 +31,8 @@ getRooms = async (req, res, next) => {
       delete queryStr.search
       queryStr = JSON.stringify(queryStr)
       reqQuery = getAgreegateSearchQuery(
-        ["classes.subject", "classes.tutorName", "classes.name"],
-        ["classes.tag"],
+        ["roomName", "shops.name", "shops.shopCode"],
+        ["tag"],
         queryStr,
         req.query.search
       )
@@ -63,9 +64,75 @@ getRooms = async (req, res, next) => {
         },
       },
     ])
+
+    // Pagination
+    const page = parseInt(req.query.page, 10) || 1
+    const limit = parseInt(req.query.limit, 10) || 10
+    const startIndex = (page - 1) * limit
+    const endIndex = page * limit
+    const total = await Room.countDocuments(reqQuery)
+
+    query = query.skip(startIndex).limit(limit)
+
+    const rooms = await query
+
+    // Pagination result
+    const pagination = {
+      now: page,
+      limit: limit,
+      last: Math.ceil(total / limit),
+      next: null,
+      prev: null,
+    }
+
+    if (endIndex < total) {
+      pagination.next = page + 1
+    }
+    if (startIndex > 0) {
+      pagination.prev = page - 1
+    }
+
+    return res.status(200).json({
+      count: total,
+      pagination,
+      rooms: rooms,
+    })
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message })
   }
+}
+
+function getAgreegateSearchQuery(
+  stringSearchField,
+  arraySearchField,
+  queryStr,
+  searchString
+) {
+  let searchParam = {
+    $or: [],
+  }
+
+  for (let stringField in stringSearchField) {
+    const newObj = {}
+    newObj[stringSearchField[stringField]] = { $regex: searchString }
+    searchParam.$or.push(newObj)
+  }
+
+  for (let arrayField in arraySearchField) {
+    const newObj = {}
+    newObj[arraySearchField[arrayField]] = {
+      $elemMatch: { name: { $regex: searchString } },
+    }
+    searchParam.$or.push(newObj)
+  }
+
+  let newqueryStr = {
+    $and: [JSON.parse(queryStr), searchParam],
+  }
+
+  queryStr = newqueryStr
+
+  return queryStr
 }
 
 module.exports = getRooms
