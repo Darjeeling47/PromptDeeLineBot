@@ -7,7 +7,7 @@ const cashBackFlexMessage = async (
 ) => {
   const messageToShop = {
     type: "flex",
-    altText: "เงินโอนคืนส่วนลด",
+    altText: "แจ้งโอนคืนส่วนลด",
     contents: {
       type: "bubble",
       hero: {
