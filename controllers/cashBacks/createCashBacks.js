@@ -52,8 +52,8 @@ createCashBacks = async (req, res, next) => {
             shopCode: row.shopCode.toString(),
             orderCode: row.orderCode.toString(),
             orderAmount: row.orderAmount,
-            cycleDate: new Date(1900, 0, row.cycleDate),
-            payDate: new Date(1900, 0, row.payDate),
+            cycleDate: new Date(1900, 0, row.cycleDate - 1),
+            payDate: new Date(1900, 0, row.payDate - 1),
           }
 
           // Check if the date is valid
