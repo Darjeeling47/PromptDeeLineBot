@@ -6,8 +6,6 @@ const Room = require("../../models/Room")
 const { dateFormatter } = require("../../utils/dateFormatter")
 const { cashBackFlexMessage } = require("./cashBackFlexMessage")
 
-export const maxDuration = 60
-
 createCashBacks = async (req, res, next) => {
   try {
     // Get the file buffer from multer
@@ -36,6 +34,7 @@ createCashBacks = async (req, res, next) => {
       }
       roomIdArray[roomData.shopId.shopCode].push(roomData.roomId)
     }
+    // console.log("room -> " + roomIdArray)
 
     // Loop through the sheets
     for (let i = 0; i < sheets.length; i++) {
@@ -140,7 +139,9 @@ createCashBacks = async (req, res, next) => {
         // Sent message to shop
 
         // Implement by using another roomIdArray
-        const room = await Room.find({ shopId: cashBack.shopId })
+        const messageRoom = roomIdArray[cashBack.shopCode]
+        console.log(messageRoom)
+        // const room = await Room.find({ shopId: cashBack.shopId })
         if (room) {
           const messageToShop = await cashBackFlexMessage(
             cashBack.shopName,
@@ -150,14 +151,16 @@ createCashBacks = async (req, res, next) => {
             cashBack.totalAmount
           )
 
-          for (let i = 0; i < room.length; i++) {
-            pushMessageFunction(messageToShop, room[i].roomId)
+          for (let i = 0; i < messageRoom.length; i++) {
+            pushMessageFunction(messageToShop, messageRoom[i])
+            console.log("push message to " + messageRoom[i])
           }
         }
 
         // Reset the cashback object
         cashBack = {
           shopId: row.shopId,
+          shopCode: row.shopCode,
           shopName: row.shopName,
           cycleDate: row.cycleDate,
           payDate: row.payDate,
@@ -183,6 +186,7 @@ createCashBacks = async (req, res, next) => {
         if (!cashBack) {
           cashBack = {
             shopId: row.shopId,
+            shopCode: row.shopCode,
             shopName: row.shopName,
             cycleDate: row.cycleDate,
             payDate: row.payDate,
@@ -213,7 +217,9 @@ createCashBacks = async (req, res, next) => {
 
       //Line notification
       // Sent message to shop
-      const room = await Room.find({ shopId: cashBack.shopId })
+      const messageRoom = roomIdArray[cashBack.shopCode]
+      console.log(messageRoom)
+      // const room = await Room.find({ shopId: cashBack.shopId })
       if (room) {
         const messageToShop = await cashBackFlexMessage(
           cashBack.shopName,
@@ -224,8 +230,8 @@ createCashBacks = async (req, res, next) => {
         )
 
         for (let i = 0; i < room.length; i++) {
-          pushMessageFunction(messageToShop, room[i].roomId)
-          console.log("push message to " + room[i].roomId)
+          pushMessageFunction(messageToShop, messageRoom[i])
+          console.log("push message to " + messageRoom[i])
         }
       }
     }
