@@ -5,10 +5,6 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "controllers/cashBacks/*.js",
-      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -16,22 +12,5 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ],
-  "functions": {
-    "controllers/cashBacks/createCashBack.js": {
-      "maxDuration": 60
-    },
-    "controllers/cashBacks/createCashBacks.js": {
-      "maxDuration": 60
-    },
-    "controllers/cashBacks/deleteCashBack.js": {
-      "maxDuration": 60
-    },
-    "controllers/cashBacks/getCashBack.js": {
-      "maxDuration": 60
-    },
-    "controllers/cashBacks/getCashBacks.js": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }
