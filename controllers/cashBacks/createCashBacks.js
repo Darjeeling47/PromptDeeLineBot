@@ -6,6 +6,8 @@ const Room = require("../../models/Room")
 const { dateFormatter } = require("../../utils/dateFormatter")
 const { cashBackFlexMessage } = require("./cashBackFlexMessage")
 
+export const maxDuration = 60
+
 createCashBacks = async (req, res, next) => {
   try {
     // Get the file buffer from multer
