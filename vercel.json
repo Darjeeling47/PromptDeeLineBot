@@ -14,7 +14,7 @@
     }
   ],
   "functions": {
-    "controllers/cashBacks/*.js": {
+    "controllers/cashBacks/createCashBacks.js": {
       "maxDuration": 60
     }
   }
