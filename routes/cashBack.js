@@ -13,12 +13,17 @@ const getCashBack = require("../controllers/cashBacks/getCashBack")
 const createCashBacks = require("../controllers/cashBacks/createCashBacks")
 const createCashBack = require("../controllers/cashBacks/createCashBack")
 const deleteCashBack = require("../controllers/cashBacks/deleteCashBack")
+const createCashBackNoti = require("../controllers/cashBacks/createCashBackNoti")
 
 // Router
 router.route("/").get(protect, getCashBacks).post(protect, createCashBack)
 router
   .route("/create-many")
   .post(protect, upload.single("excelFile"), createCashBacks)
-router.route("/:cbid").get(protect, getCashBack).delete(protect, deleteCashBack)
+router
+  .route("/:cbid")
+  .get(protect, getCashBack)
+  .delete(protect, deleteCashBack)
+  .post(protect, createCashBackNoti)
 
 module.exports = router

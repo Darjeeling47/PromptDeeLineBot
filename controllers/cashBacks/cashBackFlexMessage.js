@@ -138,10 +138,12 @@ const cashBackFlexMessage = async (
         {
           type: "text",
           text: orders[i].code,
+          size: "xs",
         },
         {
           type: "text",
           text: orders[i].amount + " บาท",
+          size: "xs",
           align: "end",
         },
       ],
