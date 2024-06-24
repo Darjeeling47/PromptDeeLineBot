@@ -23,7 +23,7 @@ const cashBackFlexMessage = async (
           },
           {
             type: "text",
-            text: "รอบวัน" + cycleDate,
+            text: "รอบวันที่ " + cycleDate,
             color: "#FFFFFF",
           },
         ],
