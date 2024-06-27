@@ -48,6 +48,7 @@ const shops = require("./routes/shops")
 const rooms = require("./routes/rooms")
 const cashBack = require("./routes/cashBack")
 const webhook = require("./routes/webhook")
+const announcements = require("./routes/announcements")
 
 app.use("/api/v1/auth", auth)
 app.use("/api/v1/users", users)
@@ -55,8 +56,7 @@ app.use("/api/v1/shops", shops)
 app.use("/api/v1/rooms", rooms)
 app.use("/api/v1/cash-back", cashBack)
 app.use("/api/v1/webhook", webhook)
-// app.post("api/v1/webhook", (req, res) => res.sendStatus(200))
-// app.get("/webhook", (req, res) => res.sendStatus(200))
+app.use("/api/v1/announcements", announcements)
 
 // setting up port ------------------------------------------------------------------------
 const PORT = process.env.PORT || 5000
