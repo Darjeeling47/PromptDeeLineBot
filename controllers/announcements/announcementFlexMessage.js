@@ -73,7 +73,7 @@ const announcementFlexMessage = async (contents) => {
         text: content.text,
         align: content.align,
         size: content.type,
-        margin: "md",
+        margin: "sm",
         color: content.color,
         weight: content.weight,
         wrap: true,
@@ -82,7 +82,7 @@ const announcementFlexMessage = async (contents) => {
       if (content.seperator) {
         flexMessage.contents.body.contents.push({
           type: "separator",
-          margin: "md",
+          margin: "sm",
           color: "#595956",
         })
       }
