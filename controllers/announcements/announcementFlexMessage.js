@@ -12,7 +12,7 @@ contents = [
 const announcementFlexMessage = async (contents) => {
   const flexMessage = {
     type: "flex",
-    altText: "แจ้งโอนคืนส่วนลด",
+    altText: "แจ้งเตือนพร้อมดี",
     contents: {
       type: "bubble",
       header: {
@@ -67,6 +67,11 @@ const announcementFlexMessage = async (contents) => {
         weight: "bold",
         wrap: true,
       })
+
+      if (content.color == "#000000") {
+        content.color = "#FFBD00"
+      }
+      flexMessage.contents.header.backgroundColor = content.color
     } else {
       flexMessage.contents.body.contents.push({
         type: "text",
