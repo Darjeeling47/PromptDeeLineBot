@@ -19,7 +19,7 @@ const announcementFlexMessage = async (contents) => {
         type: "box",
         layout: "horizontal",
         contents: [],
-        backgroundColor: "#F0F0F0",
+        backgroundColor: "#FFBD00",
         justifyContent: "space-between",
         alignItems: "center",
       },
@@ -40,18 +40,28 @@ const announcementFlexMessage = async (contents) => {
     if (!content.align) {
       content.align = "start"
     }
-    if (!content.seperater) {
-      content.seperater = false
+    if (!content.seperator) {
+      content.seperator = false
     }
     if (!content.text) {
       content.text = ""
+    }
+    if (
+      !content.color ||
+      content.color.length != 7 ||
+      content.color.charAt(0) != "#"
+    ) {
+      content.color = "#000000"
+    }
+    if (!content.weight) {
+      content.weight = "regular"
     }
 
     if (content.type == "header") {
       flexMessage.contents.header.contents.push({
         type: "text",
         text: content.text,
-        color: "#0063F2",
+        color: "#000000",
         size: "xl",
         align: "center",
         weight: "bold",
@@ -64,13 +74,16 @@ const announcementFlexMessage = async (contents) => {
         align: content.align,
         size: content.type,
         margin: "md",
+        color: content.color,
+        weight: content.weight,
         wrap: true,
       })
 
-      if (content.seperater) {
+      if (content.seperator) {
         flexMessage.contents.body.contents.push({
           type: "separator",
           margin: "md",
+          color: "#595956",
         })
       }
     }
