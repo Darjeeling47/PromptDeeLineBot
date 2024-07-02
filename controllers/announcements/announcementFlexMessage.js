@@ -72,6 +72,27 @@ const announcementFlexMessage = async (contents) => {
         content.color = "#FFBD00"
       }
       flexMessage.contents.header.backgroundColor = content.color
+    } else if (content.type == "link") {
+      flexMessage.contents.body.contents.push({
+        type: "button",
+        height: "sm",
+        action: {
+          type: "uri",
+          label: "LINK",
+          uri: content.text,
+        },
+        style: "primary",
+        color: content.color,
+        margin: "sm",
+      })
+
+      if (content.seperator) {
+        flexMessage.contents.body.contents.push({
+          type: "separator",
+          margin: "sm",
+          color: "#595956",
+        })
+      }
     } else {
       flexMessage.contents.body.contents.push({
         type: "text",
