@@ -14,7 +14,7 @@
     }
   ],
   "functions": {
-    "api/*.js": {
+    "controllers/announcements/*.js": {
       "maxDuration": 50
     }
   }
