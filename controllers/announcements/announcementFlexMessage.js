@@ -67,11 +67,11 @@ const announcementFlexMessage = async (contents) => {
         weight: "bold",
         wrap: true,
       })
-
       if (content.color == "#000000") {
         content.color = "#FFBD00"
       }
       flexMessage.contents.header.backgroundColor = content.color
+      flexMessage.altText = content.text
     } else if (content.type == "link") {
       flexMessage.contents.body.contents.push({
         type: "button",
