@@ -123,7 +123,7 @@ createAnnouncements = async (req, res, next) => {
     }
 
     // await delay 9 second
-    await new Promise((resolve) => setTimeout(resolve, 9000))
+    await new Promise((resolve) => setTimeout(resolve, 5000))
 
     return res.status(200).json({
       success: true,
