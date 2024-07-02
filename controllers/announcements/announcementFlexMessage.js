@@ -78,7 +78,7 @@ const announcementFlexMessage = async (contents) => {
         height: "sm",
         action: {
           type: "uri",
-          label: "LINK",
+          label: "กดดูเลย",
           uri: content.text,
         },
         style: "primary",

@@ -118,7 +118,7 @@ createAnnouncements = async (req, res, next) => {
 
       // Push message to shop
       for (let i = 0; i < messageRoom.length; i++) {
-        await pushMessageFunction(messageToShop, messageRoom[i])
+        pushMessageFunction(messageToShop, messageRoom[i])
       }
     }
 
