@@ -31,7 +31,7 @@ handleWebhook = async (req, res) => {
         roomId = req.body.events[0].source.groupId
       }
 
-      await Message.create({ message: messageText, roomId: roomId })
+      // await Message.create({ message: messageText, roomId: roomId })
     } catch (error) {
       res.status(200).json({ status: "error" })
     }

@@ -7,6 +7,7 @@ const Shop = require("../../models/Shop")
 const reader = require("xlsx")
 const { announcementFlexMessage } = require("./announcementFlexMessage")
 const { pushMessageFunction } = require("../webhook/pushMessageFunction")
+const { Promise } = require("mongoose")
 
 createAnnouncements = async (req, res, next) => {
   try {
@@ -122,8 +123,8 @@ createAnnouncements = async (req, res, next) => {
       }
     }
 
-    // await delay 9 second
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    // Await all push message promises
+    await Promise.all(pushMessagePromises)
 
     return res.status(200).json({
       success: true,
