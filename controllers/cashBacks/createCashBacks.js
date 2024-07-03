@@ -37,68 +37,66 @@ createCashBacks = async (req, res, next) => {
     // console.log("room -> " + roomIdArray)
 
     // Loop through the sheets
-    for (let i = 0; i < sheets.length; i++) {
-      const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[i]])
-      for (const row of temp) {
-        // Check if the row has all the required fields
+    const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[0]])
+    for (const row of temp) {
+      // Check if the row has all the required fields
+      if (
+        row.shopCode != null &&
+        row.orderCode != null &&
+        row.orderAmount != null &&
+        row.cycleDate != null &&
+        row.payDate != null
+      ) {
+        // Create a raw cashback object
+        const cashBackRaw = {
+          shopCode: row.shopCode.toString(),
+          orderCode: row.orderCode.toString(),
+          orderAmount: row.orderAmount,
+          cycleDate: new Date(1900, 0, row.cycleDate - 1),
+          payDate: new Date(1900, 0, row.payDate - 1),
+        }
+
+        // Check if the date is valid
         if (
-          row.shopCode != null &&
-          row.orderCode != null &&
-          row.orderAmount != null &&
-          row.cycleDate != null &&
-          row.payDate != null
+          cashBackRaw.cycleDate == "Invalid Date" ||
+          cashBackRaw.payDate == "Invalid Date"
         ) {
-          // Create a raw cashback object
-          const cashBackRaw = {
-            shopCode: row.shopCode.toString(),
-            orderCode: row.orderCode.toString(),
-            orderAmount: row.orderAmount,
-            cycleDate: new Date(1900, 0, row.cycleDate - 1),
-            payDate: new Date(1900, 0, row.payDate - 1),
-          }
-
-          // Check if the date is valid
-          if (
-            cashBackRaw.cycleDate == "Invalid Date" ||
-            cashBackRaw.payDate == "Invalid Date"
-          ) {
-            return res.status(400).json({
-              success: false,
-              message: "Invalid Date Format",
-            })
-          }
-
-          // Check if the shop code is valid
-          if (
-            cashBackRaw.shopCode.length != 5 &&
-            !cashBackRaw.shopCode.match(/^[0-9]{5}$/)
-          ) {
-            return res.status(400).json({
-              success: false,
-              message: "Invalid Shop Code",
-            })
-          }
-
-          // Check if the shop exists
-          if (shopIdArray[cashBackRaw.shopCode][0] == null) {
-            return res.status(404).json({
-              success: false,
-              message: "Shop not found",
-            })
-          }
-
-          // Assign the shop id to the raw cashback object
-          cashBackRaw.shopId = shopIdArray[cashBackRaw.shopCode][0]
-          cashBackRaw.shopName = shopIdArray[cashBackRaw.shopCode][1]
-
-          // Push the raw cashback object to the data array
-          data.push(cashBackRaw)
-        } else {
           return res.status(400).json({
             success: false,
-            message: "Missing Required Fields",
+            message: "Invalid Date Format",
           })
         }
+
+        // Check if the shop code is valid
+        if (
+          cashBackRaw.shopCode.length != 5 &&
+          !cashBackRaw.shopCode.match(/^[0-9]{5}$/)
+        ) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid Shop Code",
+          })
+        }
+
+        // Check if the shop exists
+        if (shopIdArray[cashBackRaw.shopCode][0] == null) {
+          return res.status(404).json({
+            success: false,
+            message: "Shop not found",
+          })
+        }
+
+        // Assign the shop id to the raw cashback object
+        cashBackRaw.shopId = shopIdArray[cashBackRaw.shopCode][0]
+        cashBackRaw.shopName = shopIdArray[cashBackRaw.shopCode][1]
+
+        // Push the raw cashback object to the data array
+        data.push(cashBackRaw)
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "Missing Required Fields",
+        })
       }
     }
 
@@ -119,6 +117,7 @@ createCashBacks = async (req, res, next) => {
     let currentPayDate = null
     let totalAmountOfCashBacks = 0
     let cashBacks = []
+    const pushMessagePromises = []
 
     // Loop through the data
     let i = 0
@@ -133,16 +132,11 @@ createCashBacks = async (req, res, next) => {
         // Add the cashback to the cashbacks array
         cashBacks.push(cashBack)
         // Update the total amount of cashbacks
-        totalAmountOfCashBacks += cashBack.totalAmount
-
-        //Line notification
-        // Sent message to shop
+        totalAmountOfCashBacks += parseInt(cashBack.totalAmount)
 
         // Implement by using another roomIdArray
         const messageRoom = roomIdArray[cashBack.shopCode]
-        console.log(messageRoom)
-        // const room = await Room.find({ shopId: cashBack.shopId })
-        if (room) {
+        if (messageRoom) {
           const messageToShop = await cashBackFlexMessage(
             cashBack.shopName,
             dateFormatter(cashBack.cycleDate),
@@ -152,8 +146,9 @@ createCashBacks = async (req, res, next) => {
           )
 
           for (let i = 0; i < messageRoom.length; i++) {
-            pushMessageFunction(messageToShop, messageRoom[i])
-            console.log("push message to " + messageRoom[i])
+            pushMessagePromises.push(
+              pushMessageFunction(messageToShop, messageRoom[i])
+            )
           }
         }
 
@@ -175,7 +170,7 @@ createCashBacks = async (req, res, next) => {
         })
 
         // Update the total amount
-        cashBack.totalAmount += row.orderAmount
+        cashBack.totalAmount += parseInt(row.orderAmount)
 
         // Update the current shop id, cycle date, and pay date
         currentShopCode = row.shopCode
@@ -202,7 +197,7 @@ createCashBacks = async (req, res, next) => {
         })
 
         // Update the total amount
-        cashBack.totalAmount += row.orderAmount
+        cashBack.totalAmount += parseInt(row.orderAmount)
 
         currentShopCode = row.shopCode
         currentCycleDate = row.cycleDate
@@ -213,14 +208,12 @@ createCashBacks = async (req, res, next) => {
     // Handle the last cashback object
     if (cashBack) {
       cashBacks.push(cashBack)
-      totalAmountOfCashBacks += cashBack.totalAmount
+      totalAmountOfCashBacks += parseInt(cashBack.totalAmount)
 
       //Line notification
       // Sent message to shop
       const messageRoom = roomIdArray[cashBack.shopCode]
-      console.log(messageRoom)
-      // const room = await Room.find({ shopId: cashBack.shopId })
-      if (room) {
+      if (messageRoom) {
         const messageToShop = await cashBackFlexMessage(
           cashBack.shopName,
           dateFormatter(cashBack.cycleDate),
@@ -230,12 +223,14 @@ createCashBacks = async (req, res, next) => {
         )
 
         for (let i = 0; i < room.length; i++) {
-          pushMessageFunction(messageToShop, messageRoom[i])
-          console.log("push message to " + messageRoom[i])
+          pushMessagePromises.push(
+            pushMessageFunction(messageToShop, messageRoom[i])
+          )
         }
       }
     }
 
+    await Promise.all(pushMessagePromises)
     const createdCashBacks = await CashBack.insertMany(cashBacks)
 
     return res.status(200).json({
@@ -245,6 +240,7 @@ createCashBacks = async (req, res, next) => {
       cashBacks: createdCashBacks,
     })
   } catch (err) {
+    console.log(err.stack)
     return res.status(500).json({ success: false, message: err.message })
   }
 }
