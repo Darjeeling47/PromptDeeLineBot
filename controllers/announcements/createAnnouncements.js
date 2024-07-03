@@ -52,6 +52,8 @@ createAnnouncements = async (req, res, next) => {
         }
 
         // Check if the shop exists
+        console.log(row.shopCode)
+        console.log(shopIdArray[row.shopCode])
         if (!shopIdArray[row.shopCode]) {
           return res.status(404).json({
             success: false,
@@ -122,9 +124,6 @@ createAnnouncements = async (req, res, next) => {
         pushMessageFunction(messageToShop, messageRoom[i])
       }
     }
-
-    // Await all push message promises
-    await Promise.all(pushMessagePromises)
 
     return res.status(200).json({
       success: true,
