@@ -7,7 +7,6 @@ const Shop = require("../../models/Shop")
 const reader = require("xlsx")
 const { announcementFlexMessage } = require("./announcementFlexMessage")
 const { pushMessageFunction } = require("../webhook/pushMessageFunction")
-const { Promise } = require("mongoose")
 
 createAnnouncements = async (req, res, next) => {
   try {
@@ -89,6 +88,7 @@ createAnnouncements = async (req, res, next) => {
 
     let currentShopCode = null
     let contentList = []
+    const pushMessagePromises = []
 
     // Loop through the data
     for (const row of data) {
@@ -101,7 +101,9 @@ createAnnouncements = async (req, res, next) => {
 
           // Push message to shop
           for (let i = 0; i < messageRoom.length; i++) {
-            pushMessageFunction(messageToShop, messageRoom[i])
+            pushMessagePromises.push(
+              pushMessageFunction(messageToShop, messageRoom[i])
+            )
           }
         }
 
@@ -121,11 +123,13 @@ createAnnouncements = async (req, res, next) => {
 
       // Push message to shop
       for (let i = 0; i < messageRoom.length; i++) {
-        pushMessageFunction(messageToShop, messageRoom[i])
+        pushMessagePromises.push(
+          pushMessageFunction(messageToShop, messageRoom[i])
+        )
       }
     }
 
-    await new Promise.all(pushMessageFunction)
+    await Promise.all(pushMessagePromises)
 
     return res.status(200).json({
       success: true,
