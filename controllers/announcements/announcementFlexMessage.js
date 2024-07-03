@@ -93,6 +93,22 @@ const announcementFlexMessage = async (contents) => {
           color: "#595956",
         })
       }
+    } else if (content.type == "action") {
+      if (content.color == "#000000") {
+        content.color = "#FFBD00"
+      }
+      flexMessage.contents.body.contents.push({
+        type: "button",
+        style: "primary",
+        color: content.color,
+        margin: "sm",
+        height: "sm",
+        action: {
+          type: "message",
+          label: content.text,
+          text: content.text,
+        },
+      })
     } else {
       flexMessage.contents.body.contents.push({
         type: "text",
