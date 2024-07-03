@@ -14,11 +14,9 @@
     }
   ],
   "functions": {
-    "api/test.js": {
+    "*": {
+      "runtime": "nodejs18.x",
       "maxDuration": 30
-    },
-    "api/*.js": {
-      "maxDuration": 15
     }
   }
 }
