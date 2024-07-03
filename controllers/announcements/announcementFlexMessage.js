@@ -61,7 +61,7 @@ const announcementFlexMessage = async (contents) => {
       flexMessage.contents.header.contents.push({
         type: "text",
         text: content.text,
-        color: "#000000",
+        color: "#FFFFFF",
         size: "xl",
         align: "center",
         weight: "bold",
