@@ -52,7 +52,7 @@ createAnnouncements = async (req, res, next) => {
         }
 
         // Check if the shop exists
-        if (shopIdArray[row.shopCode][0] == null) {
+        if (!shopIdArray[row.shopCode]) {
           return res.status(404).json({
             success: false,
             message: "Shop not found",
