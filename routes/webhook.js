@@ -17,22 +17,22 @@ handleWebhook = async (req, res) => {
   if (req.body && req.body.events && req.body.events.length > 0) {
     // Get the message text from the request body
     const messageText = req.body.events[0].message.text || "No message"
-    let replyMessage = ""
+    let replyTextMessage = ""
 
     // Save the message to the database
     await saveLineMessage(req, messageText)
 
     // Check if the message text is in correct format
     if (messageText.includes("Register Seller")) {
-      replyMessage = await createLineRoom(req)
+      replyTextMessage = await createLineRoom(req)
     } else if (messageText.includes("Unregister Seller")) {
-      replyMessage = await deleteLineRoom(req)
+      replyTextMessage = await deleteLineRoom(req)
     } else {
       return res.status(200).json({ status: "no thing to do" })
     }
 
     // Send the reply message
-    const repliedMessageStatus = await replyMessage(req, replyMessage)
+    const repliedMessageStatus = await replyMessage(req, replyTextMessage)
     if (repliedMessageStatus === "Error sending message") {
       return res.status(200).json({ status: "error sending message" })
     }
