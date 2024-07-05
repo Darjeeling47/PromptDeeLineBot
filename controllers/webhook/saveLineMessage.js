@@ -11,7 +11,7 @@ exports.saveLineMessage = async (req, message) => {
     }
 
     // create the message text
-    await Message.create({ message: messageText, roomId: roomId })
+    await Message.create({ message: message, roomId: roomId })
 
     return "Message Saved"
   } catch (error) {
