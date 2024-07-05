@@ -1,6 +1,7 @@
 const { default: axios } = require("axios")
 
 const pushMessageFunction = async (message, roomId) => {
+  // Set the url and headers
   const url = "https://api.line.me/v2/bot/message/push"
   const headers = {
     "Content-Type": "application/json",
@@ -13,6 +14,7 @@ const pushMessageFunction = async (message, roomId) => {
     messages: [message],
   }
 
+  // Send the request to the LINE API to push the message to the user
   try {
     await axios.post(url, data, { headers })
     return "Success fully push message to user"

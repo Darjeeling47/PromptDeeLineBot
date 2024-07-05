@@ -1,0 +1,29 @@
+const { default: axios } = require("axios")
+
+exports.replyMessage = async (req, message) => {
+  try {
+    let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
+    }
+    // body for the request
+    let body = JSON.stringify({
+      replyToken: req.body.events[0].replyToken,
+      messages: [
+        {
+          type: "text",
+          text: "<Bot> " + message,
+        },
+      ],
+    })
+
+    // send the request
+    await axios.post("https://api.line.me/v2/bot/message/reply", body, {
+      headers,
+    })
+
+    return "Message Sent"
+  } catch (error) {
+    return res.status(200).json({ status: "error" })
+  }
+}
