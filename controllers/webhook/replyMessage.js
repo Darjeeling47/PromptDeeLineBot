@@ -1,6 +1,6 @@
 const { default: axios } = require("axios")
 
-exports.replyMessage = async (req, message) => {
+const replyMessage = async (req, message) => {
   try {
     let headers = {
       "Content-Type": "application/json",
@@ -27,3 +27,5 @@ exports.replyMessage = async (req, message) => {
     return "Error sending message"
   }
 }
+
+module.exports = { replyMessage }
