@@ -1,6 +1,6 @@
 const Message = require("../../models/Message")
 
-exports.saveLineMessage = async (req) => {
+exports.saveLineMessage = async (req, message) => {
   try {
     // Save the message to the database
     let roomId = "Anonymous"
