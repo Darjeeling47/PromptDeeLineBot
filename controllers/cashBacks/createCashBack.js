@@ -11,10 +11,12 @@ const { cashBackFlexMessage } = require("./cashBackFlexMessage")
 
 createCashBack = async (req, res, next) => {
   try {
+    // Get data from request body
     const { shopCode, orders, cycleDate, payDate } = req.body
     const orderLength = orders.length
     let totalAmount = 0
 
+    // Check if the data is valid
     if (!shopCode || !orders || !cycleDate || !payDate) {
       return res.status(400).json({
         success: false,
@@ -22,8 +24,8 @@ createCashBack = async (req, res, next) => {
       })
     }
 
+    // Check if the shop is found
     const shop = await Shop.findOne({ shopCode: shopCode })
-
     if (!shop) {
       return res.status(404).json({
         success: false,
@@ -31,10 +33,12 @@ createCashBack = async (req, res, next) => {
       })
     }
 
+    // Calculate the total amount of the cashback
     for (let i = 0; i < orderLength; i++) {
       totalAmount += orders[i].amount
     }
 
+    // Create a new cashback
     const newCashBack = {
       shopId: shop._id,
       orders: orders,
@@ -44,8 +48,10 @@ createCashBack = async (req, res, next) => {
       uploadDate: Date.now(),
     }
 
+    // Save the cashback
     const cashBack = await CashBack.create(newCashBack)
 
+    // Find the room by shopId and send the cashback notification
     const room = await Room.find({ shopId: newCashBack.shopId })
     if (room) {
       const messageToShop = await cashBackFlexMessage(
@@ -56,11 +62,13 @@ createCashBack = async (req, res, next) => {
         cashBack.totalAmount
       )
 
+      // Send the cashback notification to all the room
       for (let i = 0; i < room.length; i++) {
         await pushMessageFunction(messageToShop, room[i].roomId)
       }
     }
 
+    // Return the cashback
     return res.status(201).json({
       cashBack: {
         _id: cashBack._id,

@@ -24,6 +24,7 @@ createCashBackNoti = async (req, res, next) => {
       })
     }
 
+    // find room by shopId
     const room = await Room.find({ shopId: cashBack.shopId })
     if (room) {
       const messageToShop = await cashBackFlexMessage(

@@ -29,26 +29,17 @@ getCashBacks = async (req, res, next) => {
     // Remove fields from reqQuery
     removeFields.forEach((param) => delete reqQuery[param])
 
+    // Create query string
     let queryStr = JSON.stringify(reqQuery)
 
+    // Create operators ($gt, $gte, etc)
     queryStr = queryStr.replace(
       /\b(gt|gte|lt|lte|in)\b/g,
       (match) => `$${match}`
     )
 
+    // Finding resource
     reqQuery = JSON.parse(queryStr)
-
-    // if (req.query.search) {
-    //   queryStr = JSON.parse(queryStr)
-    //   delete queryStr.search
-    //   queryStr = JSON.stringify(queryStr)
-    //   reqQuery = getAgreegateSearchQuery(
-    //     ["roomName", "shops.name", "shops.shopCode"],
-    //     req.query.search
-    //   )
-    // } else {
-    //   reqQuery = JSON.parse(queryStr)
-    // }
 
     // Pagination
     const page = parseInt(req.query.page, 10) || 1
@@ -79,8 +70,10 @@ getCashBacks = async (req, res, next) => {
       }
     }
 
+    // Total count
     const total = await CashBack.countDocuments({ ...reqQuery, ...dateMatch })
 
+    // Query cashBacks
     query = CashBack.aggregate([
       {
         $lookup: {
@@ -112,6 +105,7 @@ getCashBacks = async (req, res, next) => {
       },
     ])
 
+    // Execute query
     const cashBacks = await query
 
     // Pagination result
@@ -123,6 +117,7 @@ getCashBacks = async (req, res, next) => {
       prev: null,
     }
 
+    // Pagination next and prev
     if (endIndex < total) {
       pagination.next = page + 1
     }
@@ -130,6 +125,7 @@ getCashBacks = async (req, res, next) => {
       pagination.prev = page - 1
     }
 
+    // Response
     return res.status(200).json({
       count: total,
       pagination,

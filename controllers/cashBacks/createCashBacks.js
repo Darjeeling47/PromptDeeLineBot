@@ -13,32 +13,32 @@ createCashBacks = async (req, res, next) => {
     // Read the file
     const file = reader.read(fileBuffer, { type: "buffer" })
 
-    // Get the sheet names
-    const sheets = file.SheetNames
+    // initialize data array and shopIdArray and roomIdArray
     let data = []
     let shopIdArray = new Array(100000)
     let roomIdArray = new Array(100000)
 
-    // Get all the shops
+    // Get all the shops and store them in the array
     const shops = await Shop.find()
     for (const shop of shops) {
-      shopData = [shop._id, shop.name]
-      shopIdArray[shop.shopCode] = shopData
+      shopIdArray[shop.shopCode] = { id: shop._id, name: shop.name }
     }
 
-    // Get all the room
+    // Get all the room and store them in the array
     const room = await Room.find().populate("shopId")
     for (const roomData of room) {
+      // Check if the room id is null
       if (roomIdArray[roomData.shopId.shopCode] == null) {
         roomIdArray[roomData.shopId.shopCode] = []
       }
+
+      // Push the room id to the array
       roomIdArray[roomData.shopId.shopCode].push(roomData.roomId)
     }
-    // console.log("room -> " + roomIdArray)
 
-    // Loop through the sheets
-    const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[0]])
-    for (const row of temp) {
+    // Go to the first sheet
+    const tempData = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[0]])
+    for (const row of tempData) {
       // Check if the row has all the required fields
       if (
         row.shopCode != null &&
@@ -54,6 +54,11 @@ createCashBacks = async (req, res, next) => {
           orderAmount: row.orderAmount,
           cycleDate: new Date(1900, 0, row.cycleDate - 1),
           payDate: new Date(1900, 0, row.payDate - 1),
+
+          // Add the shop id and shop name to the raw cashback object
+          // This is data will use to send message to the shop
+          shopId: shopIdArray[row.shopCode].id,
+          shopName: shopIdArray[row.shopCode].name,
         }
 
         // Check if the date is valid
@@ -63,7 +68,7 @@ createCashBacks = async (req, res, next) => {
         ) {
           return res.status(400).json({
             success: false,
-            message: "Invalid Date Format",
+            message: `Invalid Date Format for the Shop Code ${cashBackRaw.shopCode} at Order Code ${cashBackRaw.orderCode}`,
           })
         }
 
@@ -74,21 +79,17 @@ createCashBacks = async (req, res, next) => {
         ) {
           return res.status(400).json({
             success: false,
-            message: "Invalid Shop Code",
+            message: `Invalid Shop Code ${cashBackRaw.shopCode} at Order Code ${cashBackRaw.orderCode}`,
           })
         }
 
         // Check if the shop exists
-        if (shopIdArray[cashBackRaw.shopCode][0] == null) {
+        if (!shopIdArray[cashBackRaw.shopCode]) {
           return res.status(404).json({
             success: false,
-            message: "Shop not found",
+            message: `Shop not found for Shop Code ${cashBackRaw.shopCode} at Order Code ${cashBackRaw.orderCode}`,
           })
         }
-
-        // Assign the shop id to the raw cashback object
-        cashBackRaw.shopId = shopIdArray[cashBackRaw.shopCode][0]
-        cashBackRaw.shopName = shopIdArray[cashBackRaw.shopCode][1]
 
         // Push the raw cashback object to the data array
         data.push(cashBackRaw)
@@ -108,8 +109,6 @@ createCashBacks = async (req, res, next) => {
       return a.orderCode.localeCompare(b.orderCode)
     })
 
-    // console.log(data)
-
     // Insert the data into the database
     let cashBack = null
     let currentShopCode = null
@@ -117,20 +116,55 @@ createCashBacks = async (req, res, next) => {
     let currentPayDate = null
     let totalAmountOfCashBacks = 0
     let cashBacks = []
+
+    // Create an array to store the promises
     const pushMessagePromises = []
 
     // Loop through the data
-    let i = 0
-    for (const row of data) {
-      // Check if the current shop id, cycle date, and pay date is different from the previous row
+    for (let i = 0; i < data.length; i++) {
+      // Get the current cashback message
+      const cashBackMessage = data[i]
+
+      // Check if the current cashback message is the first
+      if (i == 0) {
+        // Initialize cashBack
+        cashBack = {
+          shopId: cashBackMessage.shopId,
+          shopCode: cashBackMessage.shopCode,
+          shopName: cashBackMessage.shopName,
+          cycleDate: cashBackMessage.cycleDate,
+          payDate: cashBackMessage.payDate,
+          orders: [],
+          totalAmount: 0,
+        }
+
+        // Add the order to the cashback
+        cashBack.orders.push({
+          code: cashBackMessage.orderCode,
+          amount: cashBackMessage.orderAmount,
+        })
+
+        // Update the total amount
+        cashBack.totalAmount += parseInt(cashBackMessage.orderAmount)
+
+        // Update the current shop id, cycle date, and pay date
+        currentShopCode = cashBackMessage.shopCode
+        currentCycleDate = cashBackMessage.cycleDate
+        currentPayDate = cashBackMessage.payDate
+
+        continue
+      }
+
+      // Check if the current shop id, cycle date, and pay date is different from the previous cashBackMessage
       if (
         currentShopCode != null &&
-        (currentShopCode != row.shopCode ||
-          currentCycleDate.valueOf() != row.cycleDate.valueOf() ||
-          currentPayDate.valueOf() != row.payDate.valueOf())
+        (currentShopCode != cashBackMessage.shopCode ||
+          currentCycleDate.valueOf() != cashBackMessage.cycleDate.valueOf() ||
+          currentPayDate.valueOf() != cashBackMessage.payDate.valueOf())
       ) {
-        // Add the cashback to the cashbacks array
+        // Add the cashBackMessage to the cashbacks array
         cashBacks.push(cashBack)
+
         // Update the total amount of cashbacks
         totalAmountOfCashBacks += parseInt(cashBack.totalAmount)
 
@@ -154,64 +188,51 @@ createCashBacks = async (req, res, next) => {
 
         // Reset the cashback object
         cashBack = {
-          shopId: row.shopId,
-          shopCode: row.shopCode,
-          shopName: row.shopName,
-          cycleDate: row.cycleDate,
-          payDate: row.payDate,
+          shopId: cashBackMessage.shopId,
+          shopCode: cashBackMessage.shopCode,
+          shopName: cashBackMessage.shopName,
+          cycleDate: cashBackMessage.cycleDate,
+          payDate: cashBackMessage.payDate,
           orders: [],
           totalAmount: 0,
         }
 
         // Add the order to the cashback
         cashBack.orders.push({
-          code: row.orderCode,
-          amount: row.orderAmount,
+          code: cashBackMessage.orderCode,
+          amount: cashBackMessage.orderAmount,
         })
 
         // Update the total amount
-        cashBack.totalAmount += parseInt(row.orderAmount)
+        cashBack.totalAmount += parseInt(cashBackMessage.orderAmount)
 
         // Update the current shop id, cycle date, and pay date
-        currentShopCode = row.shopCode
-        currentCycleDate = row.cycleDate
-        currentPayDate = row.payDate
+        currentShopCode = cashBackMessage.shopCode
+        currentCycleDate = cashBackMessage.cycleDate
+        currentPayDate = cashBackMessage.payDate
       } else {
-        // Initialize cashBack if it's null
-        if (!cashBack) {
-          cashBack = {
-            shopId: row.shopId,
-            shopCode: row.shopCode,
-            shopName: row.shopName,
-            cycleDate: row.cycleDate,
-            payDate: row.payDate,
-            orders: [],
-            totalAmount: 0,
-          }
-        }
-
         // Add the order to the cashback
         cashBack.orders.push({
-          code: row.orderCode,
-          amount: row.orderAmount,
+          code: cashBackMessage.orderCode,
+          amount: cashBackMessage.orderAmount,
         })
 
         // Update the total amount
-        cashBack.totalAmount += parseInt(row.orderAmount)
+        cashBack.totalAmount += parseInt(cashBackMessage.orderAmount)
 
-        currentShopCode = row.shopCode
-        currentCycleDate = row.cycleDate
-        currentPayDate = row.payDate
+        currentShopCode = cashBackMessage.shopCode
+        currentCycleDate = cashBackMessage.cycleDate
+        currentPayDate = cashBackMessage.payDate
       }
     }
 
-    // Handle the last cashback object
+    // Handle the last cashback
     if (cashBack) {
+      // Add the last cashback to the cashbacks array
       cashBacks.push(cashBack)
       totalAmountOfCashBacks += parseInt(cashBack.totalAmount)
 
-      //Line notification
-      // Sent message to shop
+      // Implement by using another roomIdArray
       const messageRoom = roomIdArray[cashBack.shopCode]
       if (messageRoom) {
         const messageToShop = await cashBackFlexMessage(
@@ -222,7 +243,7 @@ createCashBacks = async (req, res, next) => {
           cashBack.totalAmount
         )
 
-        for (let i = 0; i < room.length; i++) {
+        for (let i = 0; i < messageRoom.length; i++) {
           pushMessagePromises.push(
             pushMessageFunction(messageToShop, messageRoom[i])
           )
@@ -230,9 +251,11 @@ createCashBacks = async (req, res, next) => {
       }
     }
 
+    // Wait for all the push message promises to resolve and insert the cashbacks into the database
     await Promise.all(pushMessagePromises)
     const createdCashBacks = await CashBack.insertMany(cashBacks)
 
+    // Return the response
     return res.status(200).json({
       orderCount: data.length,
       cashBackCount: createdCashBacks.length,
@@ -240,7 +263,6 @@ createCashBacks = async (req, res, next) => {
       cashBacks: createdCashBacks,
     })
   } catch (err) {
-    console.log(err.stack)
     return res.status(500).json({ success: false, message: err.message })
   }
 }

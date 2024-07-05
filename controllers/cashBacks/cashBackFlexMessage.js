@@ -5,6 +5,7 @@ const cashBackFlexMessage = async (
   orders,
   totalAmount
 ) => {
+  // Create a message to shop with the line flex message format
   const messageToShop = {
     type: "flex",
     altText: "แจ้งโอนคืนส่วนลด",
@@ -130,7 +131,9 @@ const cashBackFlexMessage = async (
     },
   }
 
+  // Add orders to the message
   for (let i = 0; i < orders.length; i++) {
+    // Add the order to the message
     messageToShop.contents.body.contents[1].contents.push({
       type: "box",
       layout: "horizontal",
@@ -152,6 +155,7 @@ const cashBackFlexMessage = async (
     })
   }
 
+  // Add the total amount to the message
   messageToShop.contents.body.contents[1].contents.push({
     type: "box",
     layout: "horizontal",
@@ -174,6 +178,7 @@ const cashBackFlexMessage = async (
     alignItems: "center",
   })
 
+  // Return the message format
   return messageToShop
 }
 
