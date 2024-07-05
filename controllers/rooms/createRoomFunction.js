@@ -2,7 +2,6 @@ const Room = require("../../models/Room")
 const Shop = require("../../models/Shop")
 
 // Make create room as a function to be exported
-
 const createRoomFunction = async (roomName, shopCode, roomId, roomType) => {
   // Check if require data is provided
   if (!roomName || !shopCode || !roomId || !roomType) {
@@ -24,8 +23,8 @@ const createRoomFunction = async (roomName, shopCode, roomId, roomType) => {
       }
     }
 
+    // Check if room id already exists
     const roomIdExist = await Room.findOne({ roomId: roomId })
-
     if (roomIdExist) {
       return {
         success: false,
@@ -44,6 +43,7 @@ const createRoomFunction = async (roomName, shopCode, roomId, roomType) => {
     // create room
     const room = await Room.create(newData)
 
+    // return the result
     return {
       success: true,
       _id: room._id,

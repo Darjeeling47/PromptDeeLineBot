@@ -12,6 +12,7 @@ createRoom = async (req, res, next) => {
     // Get data from request body
     const { roomName, shopCode, roomId, roomType } = req.body
 
+    // Create line room with the data
     const result = await createRoomFunction(
       roomName,
       shopCode,
@@ -19,6 +20,7 @@ createRoom = async (req, res, next) => {
       roomType
     )
 
+    // check if the function return success false
     if (result.success === false) {
       return res.status(400).json({
         success: false,
@@ -26,6 +28,7 @@ createRoom = async (req, res, next) => {
       })
     }
 
+    // return the result
     return res.status(201).json({
       room: {
         _id: result._id,

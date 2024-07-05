@@ -48,6 +48,7 @@ updateRoom = async (req, res, next) => {
       })
     }
 
+    // return room
     return res.status(200).json({
       room: {
         _id: room._id,

@@ -27,6 +27,7 @@ getRooms = async (req, res, next) => {
       (match) => `$${match}`
     )
 
+    // Finding resource
     if (req.query.search) {
       queryStr = JSON.parse(queryStr)
       delete queryStr.search
@@ -46,6 +47,7 @@ getRooms = async (req, res, next) => {
     const endIndex = page * limit
     const total = await Room.countDocuments(reqQuery)
 
+    // Select fields
     query = Room.aggregate([
       {
         $lookup: {
@@ -74,8 +76,7 @@ getRooms = async (req, res, next) => {
       },
     ])
 
-    // console.log(util.inspect(query, false, null, true))
-
+    // Executing query
     const rooms = await query
 
     // Pagination result
@@ -87,6 +88,7 @@ getRooms = async (req, res, next) => {
       prev: null,
     }
 
+    // Next and prev page logic
     if (endIndex < total) {
       pagination.next = page + 1
     }
@@ -94,6 +96,7 @@ getRooms = async (req, res, next) => {
       pagination.prev = page - 1
     }
 
+    // Return response
     return res.status(200).json({
       count: total,
       pagination,
