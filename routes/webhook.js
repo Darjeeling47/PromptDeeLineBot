@@ -9,6 +9,7 @@ app.use(bodyParser.json())
 const { createLineRoom } = require("../controllers/webhook/createLineRoom")
 const { deleteLineRoom } = require("../controllers/webhook/deleteLineRoom")
 const { saveLineMessage } = require("../controllers/webhook/saveLineMessage")
+const { replyMessage } = require("../controllers/webhook/replyMessage")
 
 // Handle webhook post request
 handleWebhook = async (req, res) => {
@@ -31,7 +32,10 @@ handleWebhook = async (req, res) => {
     }
 
     // Send the reply message
-    await replyMessage(req, message)
+    const repliedMessage = await replyMessage(req, message)
+    if (repliedMessage === "Error sending message") {
+      return res.status(200).json({ status: "error sending message" })
+    }
 
     // Respond with success
     return res.status(200).json({ status: "success" })

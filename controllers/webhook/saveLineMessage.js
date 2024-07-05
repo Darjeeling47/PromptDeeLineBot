@@ -15,6 +15,6 @@ exports.saveLineMessage = async (req) => {
 
     return "Message Saved"
   } catch (error) {
-    return res.status(200).json({ status: "error" })
+    return "Error saving message"
   }
 }

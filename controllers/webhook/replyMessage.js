@@ -24,6 +24,6 @@ exports.replyMessage = async (req, message) => {
 
     return "Message Sent"
   } catch (error) {
-    return res.status(200).json({ status: "error" })
+    return "Error sending message"
   }
 }
