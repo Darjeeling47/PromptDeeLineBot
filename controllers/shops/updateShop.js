@@ -17,6 +17,20 @@ updateShop = async (req, res, next) => {
       })
     }
 
+    // Check if shop code already exists
+    if (req.body.shopCode) {
+      // Check if shop code is valid
+      const checkShopCode = await Shop.findOne({ shopCode: req.body.shopCode })
+
+      // Check if shop code already exists
+      if (checkShopCode && checkShopCode._id != req.params.sid) {
+        return res.status(400).json({
+          success: false,
+          message: "Shop code already exists",
+        })
+      }
+    }
+
     // Update shop
     const shop = await Shop.findByIdAndUpdate(req.params.sid, req.body, {
       new: true,

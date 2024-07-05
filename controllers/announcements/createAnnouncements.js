@@ -51,8 +51,6 @@ createAnnouncements = async (req, res, next) => {
         }
 
         // Check if the shop exists
-        // console.log(row.shopCode)
-        // console.log(shopIdArray[row.shopCode])
         if (!shopIdArray[row.shopCode]) {
           return res.status(404).json({
             success: false,
@@ -83,7 +81,7 @@ createAnnouncements = async (req, res, next) => {
 
     // Sort the data by shopCode ASC order
     data.sort((a, b) => {
-      return a.shopCode >= b.shopCode
+      return a.shopCode - b.shopCode
     })
 
     let currentShopCode = null
