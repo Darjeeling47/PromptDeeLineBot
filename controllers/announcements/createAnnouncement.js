@@ -11,6 +11,7 @@ createAnnouncement = async (req, res, next) => {
   try {
     const { shopCode, contents } = req.body
 
+    // shop code and contents are required
     if (!shopCode || !contents) {
       return res.status(400).json({
         success: false,
@@ -18,6 +19,7 @@ createAnnouncement = async (req, res, next) => {
       })
     }
 
+    // check if the shop exists
     const shop = await Shop.findOne({ shopCode: shopCode })
     if (!shop) {
       return res.status(404).json({
@@ -26,10 +28,13 @@ createAnnouncement = async (req, res, next) => {
       })
     }
 
+    // check if the shop has a room
     const room = await Room.find({ shopId: shop._id })
     if (room) {
+      // create announcement to the shop
       const messageToShop = await announcementFlexMessage(contents)
 
+      // push message to all the room of the shop
       for (let i = 0; i < room.length; i++) {
         await pushMessageFunction(messageToShop, room[i].roomId)
       }

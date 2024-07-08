@@ -105,6 +105,7 @@ createAnnouncements = async (req, res, next) => {
           }
         }
 
+        // Reset the list
         contentList = []
         contentList.push(row)
         currentShopCode = row.shopCode
@@ -127,6 +128,7 @@ createAnnouncements = async (req, res, next) => {
       }
     }
 
+    // await to push message for all line bot
     await Promise.all(pushMessagePromises)
 
     return res.status(200).json({

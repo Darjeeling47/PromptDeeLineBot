@@ -1,14 +1,4 @@
-/*
-contents = [
-  {
-    text: string,
-    align: string,
-    type: string,
-    seperator: boolean,
-  }
-]
-*/
-
+// Initiate Flex Message for Announcement
 const announcementFlexMessage = async (contents) => {
   const flexMessage = {
     type: "flex",
@@ -31,9 +21,11 @@ const announcementFlexMessage = async (contents) => {
     },
   }
 
+  // loop through the contents
   for (let i = 0; i < contents.length; i++) {
     const content = contents[i]
 
+    // check if the content has all the required fields and set the default value
     if (!content.type) {
       content.type = "md"
     }
@@ -57,6 +49,8 @@ const announcementFlexMessage = async (contents) => {
       content.weight = "regular"
     }
 
+    // check the type of the content and push it to the flex message
+    // check if the content is a header
     if (content.type == "header") {
       flexMessage.contents.header.contents.push({
         type: "text",
@@ -72,7 +66,9 @@ const announcementFlexMessage = async (contents) => {
       }
       flexMessage.contents.header.backgroundColor = content.color
       flexMessage.altText = content.text
-    } else if (content.type == "link") {
+    }
+    // check if the content is a link
+    else if (content.type == "link") {
       flexMessage.contents.body.contents.push({
         type: "button",
         height: "sm",
@@ -93,7 +89,9 @@ const announcementFlexMessage = async (contents) => {
           color: "#595956",
         })
       }
-    } else if (content.type == "action") {
+    }
+    // check if the content is an action
+    else if (content.type == "action") {
       if (content.color == "#000000") {
         content.color = "#FFBD00"
       }
@@ -109,7 +107,9 @@ const announcementFlexMessage = async (contents) => {
           text: content.text,
         },
       })
-    } else {
+    }
+    // check if the content is a text
+    else {
       flexMessage.contents.body.contents.push({
         type: "text",
         text: content.text,
