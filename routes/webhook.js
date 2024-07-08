@@ -20,7 +20,7 @@ handleWebhook = async (req, res) => {
     let replyTextMessage = ""
 
     // Save the message to the database
-    await saveLineMessage(req, messageText)
+    saveLineMessage(req, messageText)
 
     // Check if the message text is in correct format
     if (messageText.includes("Register Seller")) {
