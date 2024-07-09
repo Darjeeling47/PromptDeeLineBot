@@ -7,7 +7,7 @@ const Shop = require("../../models/Shop")
 createShop = async (req, res, next) => {
   try {
     // Destructure request body
-    const { name, shopCode, score, province } = req.body
+    const { name, shopCode, province } = req.body
 
     // Check if name, shop code, and province are provided
     if (!name || !shopCode || !province) {

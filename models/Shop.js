@@ -15,11 +15,6 @@ const ShopSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please add a province"],
   },
-  score: {
-    type: Number,
-    required: [true, "Please add a score"],
-    default: 0,
-  },
 })
 
 ShopSchema.pre(
