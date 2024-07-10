@@ -10,6 +10,7 @@ const { protect } = require("../middleware/auth")
 // Import controller
 const createAnnouncement = require("../controllers/announcements/createAnnouncement")
 const createAnnouncements = require("../controllers/announcements/createAnnouncements")
+const createAnnouncementExcel = require("../controllers/announcements/createAnnouncementExcel")
 
 // Router
 router.post("/", protect, createAnnouncement)
@@ -19,5 +20,6 @@ router.post(
   upload.single("excelFile"),
   createAnnouncements
 )
+router.post("/convert-to-excel", protect, createAnnouncementExcel)
 
 module.exports = router
