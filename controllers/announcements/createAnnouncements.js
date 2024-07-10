@@ -46,7 +46,7 @@ createAnnouncements = async (req, res, next) => {
         if (row.shopCode.toString().length != 5) {
           return res.status(400).json({
             success: false,
-            message: "Invalid Shop Code",
+            message: `Invalid Shop Code ${row.shopCode}`,
           })
         }
 
@@ -54,7 +54,7 @@ createAnnouncements = async (req, res, next) => {
         if (!shopIdArray[row.shopCode]) {
           return res.status(404).json({
             success: false,
-            message: "Shop not found",
+            message: `Shop not found at ${row.shopCode}`,
           })
         }
 

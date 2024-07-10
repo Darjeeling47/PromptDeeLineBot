@@ -11,6 +11,7 @@ const { protect } = require("../middleware/auth")
 const createAnnouncement = require("../controllers/announcements/createAnnouncement")
 const createAnnouncements = require("../controllers/announcements/createAnnouncements")
 const createAnnouncementExcel = require("../controllers/announcements/createAnnouncementExcel")
+const createAnnouncementBoardcast = require("../controllers/announcements/createAnnouncementBoardcast")
 
 // Router
 router.post("/", protect, createAnnouncement)
@@ -21,5 +22,6 @@ router.post(
   createAnnouncements
 )
 router.post("/convert-to-excel", protect, createAnnouncementExcel)
+router.post("/boardcast", protect, createAnnouncementBoardcast)
 
 module.exports = router
