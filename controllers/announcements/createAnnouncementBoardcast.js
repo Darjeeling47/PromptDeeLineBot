@@ -7,17 +7,22 @@ req.body = {
 
 const Room = require("../../models/Room")
 const Shop = require("../../models/Shop")
+const { pushMessageFunction } = require("../webhook/pushMessageFunction")
+const { announcementFlexMessage } = require("./announcementFlexMessage")
 
 createAnnouncementBoardcast = async (req, res, next) => {
   try {
-    const { shopsCode, content } = req.body
+    const { shopsCode, contents } = req.body
 
-    if (!shopsCode || !content) {
+    if (!shopsCode || !contents) {
       return res.status(400).json({
         success: false,
         message: "Please provide shopsCode or message content",
       })
     }
+
+    let shopIdArray = new Array(100000)
+    let roomIdArray = new Array(100000)
 
     // Get all the shops and store them in the array
     const shops = await Shop.find()
@@ -39,10 +44,17 @@ createAnnouncementBoardcast = async (req, res, next) => {
 
     const pushMessagePromises = []
     for (const shopCode of shopsCode) {
+      if (!shopIdArray[shopCode] || shopCode.length != 5) {
+        return res.status(404).json({
+          success: false,
+          message: `Shop not found for Shop Code ${shopCode}`,
+        })
+      }
+
       const messageRoom = roomIdArray[shopCode]
       if (messageRoom) {
         // Create announcement flex message
-        const messageToShop = await announcementFlexMessage(contentList)
+        const messageToShop = await announcementFlexMessage(contents)
 
         // Push message to shop
         for (let i = 0; i < messageRoom.length; i++) {
