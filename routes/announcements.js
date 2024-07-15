@@ -15,6 +15,7 @@ const createAnnouncementBoardcast = require("../controllers/announcements/create
 const createAnnouncementTemplate = require("../controllers/announcements/createAnnouncementTemplate")
 const getAnnouncementTemplates = require("../controllers/announcements/getAnnouncementTemplates")
 const getAnnouncementTemplate = require("../controllers/announcements/getAnnouncementTemplate")
+const deleteAnnouncementTemplate = require("../controllers/announcements/deleteAnnouncementTemplate")
 
 // Router
 router.post("/", protect, createAnnouncement)
@@ -30,6 +31,9 @@ router
   .route("/templates")
   .get(protect, getAnnouncementTemplates)
   .post(protect, createAnnouncementTemplate)
-router.route("/templates/:aid").get(protect, getAnnouncementTemplate)
+router
+  .route("/templates/:aid")
+  .get(protect, getAnnouncementTemplate)
+  .delete(protect, deleteAnnouncementTemplate)
 
 module.exports = router
